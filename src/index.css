@@ -555,6 +555,72 @@ body {
   transform: scale(1.05);
 }
 
+/* ===== 写一句弹窗 ===== */
+.fuguang-text-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(180, 160, 130, 0.12);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #5a5040;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  resize: none;
+  outline: none;
+  margin-bottom: 16px;
+}
+
+.fuguang-text-input::placeholder {
+  color: #c0b8a8;
+}
+
+.fuguang-text-input:focus {
+  border-color: rgba(180, 160, 130, 0.3);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.fuguang-text-input-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.fuguang-text-input-cancel {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(180, 160, 130, 0.12);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  color: #b0a898;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+}
+
+.fuguang-text-input-save {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  background: #C4C9B7;
+  font-family: inherit;
+  font-size: 13px;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
+.fuguang-text-input-save:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.fuguang-text-input-save:not(:disabled):active {
+  background: #b0b5a3;
+}
+
 /* ===== 轻音乐按钮 ===== */
 .fuguang-music-btn {
   position: fixed;

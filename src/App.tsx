@@ -587,6 +587,8 @@ function App() {
   const [hoveredEntry, setHoveredEntry] = useState<string | null>(null);
   const [orbFlash, setOrbFlash] = useState(false);
   const [showMemoryOptions, setShowMemoryOptions] = useState(false);
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [textInputValue, setTextInputValue] = useState("");
 
   // ===== 拖拽 & 银河状态 =====
   const [isDragging, setIsDragging] = useState(false);
@@ -813,6 +815,52 @@ function App() {
     },
     [currentEvent],
   );
+
+  // ===== ✏️ 写一句：打开文本输入 =====
+  const handleTextWrite = useCallback(() => {
+    setShowMemoryOptions(false);
+    setTextInputValue("");
+    setShowTextInput(true);
+  }, []);
+
+  // ===== 保存文本记录 =====
+  const handleTextSave = useCallback(() => {
+    const text = textInputValue.trim();
+    if (!text || isAnimating) return;
+    setIsAnimating(true);
+    setShowTextInput(false);
+    const now = new Date();
+    const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
+    const timeStr = getTimeStr();
+    const newEntry: MemoryEntry = {
+      id: Date.now() + Math.random(),
+      date: dateStr,
+      month: now.getMonth() + 1,
+      time: timeStr,
+      emoji: "✏️",
+      eventText: text,
+      keyword: text.slice(0, 8),
+      moodId: "",
+      moodLabel: "",
+      moodColor: "",
+      response: "",
+    };
+    setTimeout(() => {
+      setMemoryEntries((prev) => {
+        const updated = [newEntry, ...prev];
+        saveMemoryToStorage(updated);
+        return updated;
+      });
+      setResponseText("这句话，留在了今天的记忆里");
+      setPageState("collected");
+      setIsAnimating(false);
+      setTimeout(() => {
+        setResponseText("");
+        setPageState("idle");
+        setCurrentEvent(null);
+      }, 2500);
+    }, 300);
+  }, [textInputValue, isAnimating]);
 
   // ===== 🏷️ 标记心情：弹出情绪选择 =====
   const handleMoodTag = useCallback(() => {
@@ -1045,6 +1093,10 @@ function App() {
                   <span className="fuguang-memory-icon">🏷️</span>
                   <span className="fuguang-memory-label">标记心情</span>
                 </button>
+                <button className="fuguang-memory-btn" onClick={handleTextWrite}>
+                  <span className="fuguang-memory-icon">✏️</span>
+                  <span className="fuguang-memory-label">写一句</span>
+                </button>
               </div>
               {/* 隐藏相机 input */}
               <input
@@ -1072,6 +1124,36 @@ function App() {
           )}
 
         </div>
+
+        {/* 写一句弹窗 */}
+        {showTextInput && (
+          <div className="fuguang-mood-overlay">
+            <div className="fuguang-mood-backdrop" onClick={() => setShowTextInput(false)} />
+            <div className="fuguang-mood-sheet">
+              <p className="fuguang-mood-title">写下一句你想记住的</p>
+              <textarea
+                className="fuguang-text-input"
+                placeholder="比如：今天路过面包店，闻到了小时候的味道..."
+                value={textInputValue}
+                onChange={(e) => setTextInputValue(e.target.value)}
+                rows={3}
+                autoFocus
+              />
+              <div className="fuguang-text-input-btns">
+                <button className="fuguang-text-input-cancel" onClick={() => setShowTextInput(false)}>
+                  取消
+                </button>
+                <button
+                  className="fuguang-text-input-save"
+                  onClick={handleTextSave}
+                  disabled={!textInputValue.trim() || isAnimating}
+                >
+                  存入时光
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 心情选择弹窗 */}
         {showMoodPicker && (
