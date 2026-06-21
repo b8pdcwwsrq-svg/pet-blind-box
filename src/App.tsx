@@ -170,8 +170,10 @@ function getSeason(): "spring" | "summer" | "autumn" | "winter" {
 const ALL_MOODS = [
   { id: "calm", label: "平静", color: "#8CB4C4" },
   { id: "warm", label: "温暖", color: "#D4A4A8" },
+  { id: "happy", label: "开心", color: "#E8B878" },
   { id: "sad", label: "低落", color: "#A4C4B8" },
   { id: "tired", label: "疲惫", color: "#C8C888" },
+  { id: "confused", label: "困惑", color: "#B8A0C8" },
 ];
 
 // ===== 四季音乐 =====
