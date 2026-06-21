@@ -1111,6 +1111,13 @@ function App() {
             <FuguangTimeline
               entries={memoryEntries}
               onClose={() => setShowTimeline(false)}
+              onDelete={(id) => {
+                setMemoryEntries((prev) => {
+                  const updated = prev.filter((e) => e.id !== id);
+                  saveMemoryToStorage(updated);
+                  return updated;
+                });
+              }}
             />
           )}
         </AnimatePresence>
