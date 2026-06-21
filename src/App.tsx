@@ -755,7 +755,7 @@ function App() {
     setDragY(0);
   }, [handleOrbClick]);
 
-  // ===== 感受当下：光球闪亮 → 浮现 📷/🏷️ =====
+  // ===== 拾取记忆：光球闪亮 → 浮现 📷/🏷️ =====
   const handleFeelNow = useCallback(() => {
     if (isAnimating || pageState !== "revealed") return;
     setIsAnimating(true);
@@ -1042,13 +1042,13 @@ function App() {
             </div>
           )}
 
-          {/* 感受当下 按钮 */}
+          {/* 拾取记忆 按钮 */}
           {pageState === "revealed" && currentEvent && (
             <button
               className="fuguang-feel-now-btn"
               onClick={(e) => { e.stopPropagation(); handleFeelNow(); }}
             >
-              感受当下
+              拾取记忆
             </button>
           )}
 
