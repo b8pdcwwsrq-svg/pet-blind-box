@@ -438,10 +438,10 @@ function SwipeCard({
             </div>
           )}
           <div className="fuguang-timeline-card-footer">
+            <span className="fuguang-timeline-card-time">{entry.time}</span>
             {entry.moodLabel && (
               <span className="fuguang-timeline-card-mood" style={{ color: entry.moodColor || "#8B7E74" }}>{entry.moodLabel}</span>
             )}
-            <span className="fuguang-timeline-card-time">{entry.time}</span>
           </div>
         </div>
       </motion.div>

@@ -1921,17 +1921,22 @@ body {
   border-radius: 4px;
 }
 
-/* 底部：情绪 + 时间 */
+/* 底部：时间 + 情绪 */
 .fuguang-timeline-card-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
 }
 
 .fuguang-timeline-card-mood {
   font-size: 11px;
   letter-spacing: 0.04em;
+}
+
+.fuguang-timeline-card-mood::before {
+  content: "·";
+  margin-right: 4px;
+  opacity: 0.4;
 }
 
 .fuguang-timeline-card-response {
