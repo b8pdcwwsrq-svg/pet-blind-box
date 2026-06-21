@@ -224,35 +224,44 @@ function GlassJar({
       const py = sy + floatY;
 
       if (s.color) {
-        // 有情绪 —— 彩色萤火虫
-        // 外发光
-        const outerGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius * 4);
-        outerGlow.addColorStop(0, s.color + "55");
-        outerGlow.addColorStop(0.4, s.color + "15");
+        // 有情绪 —— 彩色萤火虫（低饱和 + 呼吸闪烁）
+        // 闪烁因子 —— 每颗星独立的呼吸节奏，0→1 循环
+        const breathe = 0.5 + 0.5 * Math.sin(t * 1.8 + s.phase * 3.1);
+        const flicker = 0.15 + 0.85 * Math.sin(t * 2.7 + s.phase * 2.3);
+        const bright = Math.max(0.08, flicker); // 最暗时几乎熄灭
+
+        // 外发光 —— 饱和度降低，跟呼吸同步
+        const outerGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius * 4.5);
+        outerGlow.addColorStop(0, s.color + "28");
+        outerGlow.addColorStop(0.35, s.color + "0C");
         outerGlow.addColorStop(1, "transparent");
         ctx.fillStyle = outerGlow;
+        ctx.globalAlpha = 0.3 + 0.7 * breathe; // 呼吸节奏控制外发光强度
         ctx.beginPath();
-        ctx.arc(px, py, s.radius * 4, 0, Math.PI * 2);
+        ctx.arc(px, py, s.radius * 4.5, 0, Math.PI * 2);
         ctx.fill();
+        ctx.globalAlpha = 1;
 
-        // 内发光
-        const innerGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius * 1.8);
-        innerGlow.addColorStop(0, s.color + "EE");
-        innerGlow.addColorStop(0.5, s.color + "88");
+        // 内层柔和光晕 —— 跟着呼吸涨缩
+        const innerGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius * 2.2);
+        innerGlow.addColorStop(0, s.color + "88");
+        innerGlow.addColorStop(0.5, s.color + "33");
         innerGlow.addColorStop(1, s.color + "00");
         ctx.fillStyle = innerGlow;
+        ctx.globalAlpha = 0.3 + 0.7 * breathe;
         ctx.beginPath();
-        ctx.arc(px, py, s.radius * 1.8, 0, Math.PI * 2);
+        ctx.arc(px, py, s.radius * 2.2, 0, Math.PI * 2);
         ctx.fill();
+        ctx.globalAlpha = 1;
 
-        // 闪烁（亮度随时间和相位变化）
-        const flicker = 0.6 + 0.4 * Math.sin(t * 2.3 + s.phase * 2.7);
-        const coreGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius);
-        coreGlow.addColorStop(0, `rgba(255,255,255,${0.9 * flicker})`);
-        coreGlow.addColorStop(1, "rgba(255,255,255,0)");
+        // 星核 —— 一闪一闪，从微微亮到骤然发光
+        const coreGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius * 1.3);
+        coreGlow.addColorStop(0, `rgba(255,255,250,${0.85 * bright})`);
+        coreGlow.addColorStop(0.6, `rgba(255,255,250,${0.25 * bright})`);
+        coreGlow.addColorStop(1, "rgba(255,255,250,0)");
         ctx.fillStyle = coreGlow;
         ctx.beginPath();
-        ctx.arc(px, py, s.radius, 0, Math.PI * 2);
+        ctx.arc(px, py, s.radius * 1.3, 0, Math.PI * 2);
         ctx.fill();
       } else {
         // 无情绪 —— 暗淡小白点
