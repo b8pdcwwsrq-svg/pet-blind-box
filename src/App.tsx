@@ -1061,10 +1061,6 @@ function App() {
                   <span className="fuguang-memory-icon">📷</span>
                   <span className="fuguang-memory-label">留念</span>
                 </button>
-                <button className="fuguang-memory-btn" onClick={handleMoodTag}>
-                  <span className="fuguang-memory-icon">🏷️</span>
-                  <span className="fuguang-memory-label">标记心情</span>
-                </button>
                 <button className="fuguang-memory-btn" onClick={handleTextWrite}>
                   <span className="fuguang-memory-icon">✏️</span>
                   <span className="fuguang-memory-label">写一句</span>
