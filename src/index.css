@@ -372,10 +372,16 @@ body {
   width: 100%;
   text-align: center;
   padding: 20px 0;
+  animation: reveal-fade-in 0.6s ease forwards;
   transition:
     opacity 0.5s ease,
     transform 0.5s ease,
     filter 0.5s ease;
+}
+
+@keyframes reveal-fade-in {
+  0% { opacity: 0; transform: translateY(12px); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
 /* 换一段时的淡出状态 */
@@ -401,6 +407,7 @@ body {
   line-height: 2.2;
   letter-spacing: 0.06em;
   font-weight: 300;
+  text-indent: 2em;
   margin-bottom: 32px;
   max-width: 300px;
   margin-left: auto;
@@ -1858,7 +1865,7 @@ body {
   inset: -3px;
   border-radius: 50%;
   background: inherit;
-  opacity: 0.25;
+  opacity: 0.15;
   filter: blur(3px);
 }
 
@@ -1885,6 +1892,7 @@ body {
   line-height: 1.65;
   letter-spacing: 0.04em;
   font-weight: 320;
+  text-indent: 2em;
   margin: 0 0 8px;
 }
 
@@ -1913,12 +1921,17 @@ body {
   border-radius: 4px;
 }
 
-/* 底部：时间 + 回应 */
+/* 底部：情绪 + 时间 */
 .fuguang-timeline-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+
+.fuguang-timeline-card-mood {
+  font-size: 11px;
+  letter-spacing: 0.04em;
 }
 
 .fuguang-timeline-card-response {

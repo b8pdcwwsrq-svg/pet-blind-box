@@ -252,46 +252,6 @@ function GlassJar({
         ctx.beginPath();
         ctx.arc(px, py, s.radius * 1.3, 0, Math.PI * 2);
         ctx.fill();
-
-        // 十字光芒
-        const rayAlpha = 0.18 * bright;
-        if (rayAlpha > 0.03) {
-          ctx.save();
-          ctx.globalAlpha = rayAlpha;
-          const rayLen = s.radius * 2.2;
-          const rayW = s.radius * 0.3;
-          // 水平光芒
-          const hGrad = ctx.createLinearGradient(px - rayLen, py, px + rayLen, py);
-          hGrad.addColorStop(0, "transparent");
-          hGrad.addColorStop(0.4, `rgba(255,255,250,0.8)`);
-          hGrad.addColorStop(0.5, "rgba(255,255,255,1)");
-          hGrad.addColorStop(0.6, `rgba(255,255,250,0.8)`);
-          hGrad.addColorStop(1, "transparent");
-          ctx.fillStyle = hGrad;
-          ctx.fillRect(px - rayLen, py - rayW, rayLen * 2, rayW * 2);
-          // 垂直光芒
-          const vGrad = ctx.createLinearGradient(px, py - rayLen, px, py + rayLen);
-          vGrad.addColorStop(0, "transparent");
-          vGrad.addColorStop(0.4, `rgba(255,255,250,0.8)`);
-          vGrad.addColorStop(0.5, "rgba(255,255,255,1)");
-          vGrad.addColorStop(0.6, `rgba(255,255,250,0.8)`);
-          vGrad.addColorStop(1, "transparent");
-          ctx.fillStyle = vGrad;
-          ctx.fillRect(px - rayW, py - rayLen, rayW * 2, rayLen * 2);
-          // 对角光芒 X
-          ctx.translate(px, py);
-          ctx.rotate(Math.PI / 4);
-          const xGrad = ctx.createLinearGradient(-rayLen * 0.7, 0, rayLen * 0.7, 0);
-          xGrad.addColorStop(0, "transparent");
-          xGrad.addColorStop(0.45, `rgba(255,255,250,0.5)`);
-          xGrad.addColorStop(0.5, "rgba(255,255,255,0.7)");
-          xGrad.addColorStop(0.55, `rgba(255,255,250,0.5)`);
-          xGrad.addColorStop(1, "transparent");
-          ctx.fillStyle = xGrad;
-          ctx.fillRect(-rayLen * 0.7, -rayW * 0.6, rayLen * 1.4, rayW * 1.2);
-          ctx.fillRect(-rayW * 0.6, -rayLen * 0.7, rayW * 1.2, rayLen * 1.4);
-          ctx.restore();
-        }
       } else {
         const dim = 0.06 + 0.03 * Math.sin(t * 0.5 + s.phase);
         ctx.fillStyle = `rgba(200,195,185,${dim})`;
@@ -478,6 +438,9 @@ function SwipeCard({
             </div>
           )}
           <div className="fuguang-timeline-card-footer">
+            {entry.moodLabel && (
+              <span className="fuguang-timeline-card-mood" style={{ color: entry.moodColor || "#8B7E74" }}>{entry.moodLabel}</span>
+            )}
             <span className="fuguang-timeline-card-time">{entry.time}</span>
           </div>
         </div>

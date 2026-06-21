@@ -880,7 +880,7 @@ function App() {
           {/* 事件卡片 */}
           {pageState === "revealed" && currentEvent && (
             <div className="fuguang-reveal">
-              <p className="fuguang-event-text">{currentEvent.text}</p>
+              <p className="fuguang-event-text" key={currentEvent.id}>{currentEvent.text}</p>
               <span className="fuguang-event-location">{currentEvent.location}</span>
             </div>
           )}
