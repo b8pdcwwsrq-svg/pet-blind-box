@@ -588,9 +588,9 @@ function App() {
   const [orbFlash, setOrbFlash] = useState(false);
   const [swapCount, setSwapCount] = useState(0);
   const [canSwap, setCanSwap] = useState(true);
-  const [showMemoryOptions, setShowMemoryOptions] = useState(false);
-  const [showTextInput, setShowTextInput] = useState(false);
-  const [textInputValue, setTextInputValue] = useState("");
+  const [showEnvelope, setShowEnvelope] = useState(false);
+  const [envelopeText, setEnvelopeText] = useState("");
+  const [envelopeImage, setEnvelopeImage] = useState<string | null>(null);
 
   // ===== 拖拽 & 银河状态 =====
   const [isDragging, setIsDragging] = useState(false);
@@ -774,91 +774,35 @@ function App() {
     setDragY(0);
   }, [handleOrbClick]);
 
-  // ===== 记录当下：从首页直接弹拍照/写一句 =====
+  // ===== 记录当下：打开信封 =====
   const handleRecordNow = useCallback(() => {
     if (isAnimating) return;
-    setShowMemoryOptions(true);
+    setEnvelopeText("");
+    setEnvelopeImage(null);
+    setShowEnvelope(true);
   }, [isAnimating]);
 
-  // ===== 📷 拍照 → 直接保存 =====
-  const handlePhotoCapture = useCallback(() => {
+  // ===== 信封内拍照 =====
+  const handleEnvelopePhoto = useCallback(() => {
     cameraInputRef.current?.click();
   }, []);
 
-  const handlePhotoTaken = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const imageData = reader.result as string;
-        const now = new Date();
-        const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
-        const timeStr = getTimeStr();
-        const newEntry: MemoryEntry = {
-          id: Date.now() + Math.random(),
-          date: dateStr, month: now.getMonth() + 1, time: timeStr,
-          emoji: "📷",
-          eventText: "用照片记录了此刻",
-          keyword: "留影",
-          moodId: "", moodLabel: "", moodColor: "",
-          response: "",
-          imageData,
-        };
-        setMemoryEntries((prev) => {
-          const updated = [newEntry, ...prev];
-          saveMemoryToStorage(updated);
-          return updated;
-        });
-        setShowMemoryOptions(false);
-        setPageState("collected");
-        setResponseText("这一刻的画面，留在了今天的记忆里");
-        setTimeout(() => {
-          setResponseText("");
-          setPageState("idle");
-        }, 2200);
-      };
-      reader.readAsDataURL(file);
-      e.target.value = "";
-    },
-    [],
-  );
-
-  // ===== ✏️ 写一句 → 直接保存 =====
-  const handleTextWrite = useCallback(() => {
-    setShowMemoryOptions(false);
-    setTextInputValue("");
-    setShowTextInput(true);
+  const handlePhotoTaken = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setEnvelopeImage(reader.result as string);
+    reader.readAsDataURL(file);
+    e.target.value = "";
   }, []);
 
-  const handleTextSave = useCallback(() => {
-    const text = textInputValue.trim();
-    if (!text || isAnimating) return;
-    const now = new Date();
-    const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
-    const timeStr = getTimeStr();
-    const newEntry: MemoryEntry = {
-      id: Date.now() + Math.random(),
-      date: dateStr, month: now.getMonth() + 1, time: timeStr,
-      emoji: "✏️",
-      eventText: text,
-      keyword: text.slice(0, 8),
-      moodId: "", moodLabel: "", moodColor: "",
-      response: "",
-    };
-    setMemoryEntries((prev) => {
-      const updated = [newEntry, ...prev];
-      saveMemoryToStorage(updated);
-      return updated;
-    });
-    setShowTextInput(false);
-    setPageState("collected");
-    setResponseText("这句话，留在了今天的记忆里");
-    setTimeout(() => {
-      setResponseText("");
-      setPageState("idle");
-    }, 2200);
-  }, [textInputValue, isAnimating]);
+  // ===== 信封提交 → 选情绪 =====
+  const handleEnvelopeSubmit = useCallback(() => {
+    const text = envelopeText.trim();
+    if (!text && !envelopeImage) return;
+    setShowEnvelope(false);
+    setShowMoodPicker(true);
+  }, [envelopeText, envelopeImage]);
 
   // ===== 标记心情：光球抽取后 → 选情绪 → 保存 =====
   const handleMoodTag = useCallback(() => {
@@ -867,7 +811,7 @@ function App() {
 
   const handleMoodSelect = useCallback(
     (mood: (typeof ALL_MOODS)[0]) => {
-      if (isAnimating || !currentEvent) return;
+      if (isAnimating) return;
       setIsAnimating(true);
       setShowMoodPicker(false);
       const randomWords =
@@ -875,6 +819,43 @@ function App() {
       const now = new Date();
       const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
       const timeStr = getTimeStr();
+
+      // 从信封来的：文字+照片+情绪
+      if (envelopeText.trim() || envelopeImage) {
+        const emoji = envelopeImage ? "📷" : "✏️";
+        const eventText = envelopeText.trim() || "用照片记录了此刻";
+        const newEntry: MemoryEntry = {
+          id: Date.now() + Math.random(),
+          date: dateStr, month: now.getMonth() + 1, time: timeStr,
+          emoji,
+          eventText,
+          keyword: envelopeText.trim().slice(0, 8) || "留影",
+          moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
+          response: randomWords,
+          imageData: envelopeImage || undefined,
+        };
+        setEnvelopeText("");
+        setEnvelopeImage(null);
+        setTimeout(() => {
+          setResponseText(randomWords);
+          setPageState("collected");
+          setIsAnimating(false);
+          setMemoryEntries((prev) => {
+            const updated = [newEntry, ...prev];
+            saveMemoryToStorage(updated);
+            return updated;
+          });
+          setTimeout(() => {
+            setResponseText("");
+            setPageState("idle");
+            setCurrentEvent(null);
+          }, 2500);
+        }, 600);
+        return;
+      }
+
+      // 从光球来的：只有情绪色
+      if (!currentEvent) { setIsAnimating(false); return; }
       const newEntry: MemoryEntry = {
         id: Date.now() + Math.random(),
         date: dateStr, month: now.getMonth() + 1, time: timeStr,
@@ -900,7 +881,7 @@ function App() {
         }, 2500);
       }, 600);
     },
-    [isAnimating, currentEvent],
+    [isAnimating, currentEvent, envelopeText, envelopeImage],
   );
 
   // ===== 再拾一段：回到 idle =====
@@ -908,7 +889,7 @@ function App() {
     if (isAnimating) return;
     setIsAnimating(true);
     setResponseText("");
-    setShowMemoryOptions(false);
+    setShowEnvelope(false);
     setPageState("idle");
     setCurrentEvent(null);
     setTimeout(() => setIsAnimating(false), 400);
@@ -1060,7 +1041,7 @@ function App() {
             </div>
           )}
 
-          {/* 光球抽取后：标记心情 + 换一位任务 */}
+          {/* 光球抽取后：标记心情 / 记录当下 / 换一位任务 */}
           {pageState === "revealed" && currentEvent && (
             <div className="fuguang-reveal-btns">
               <button
@@ -1068,6 +1049,12 @@ function App() {
                 onClick={(e) => { e.stopPropagation(); handleMoodTag(); }}
               >
                 标记心情
+              </button>
+              <button
+                className="fuguang-record-now-btn"
+                onClick={(e) => { e.stopPropagation(); handleRecordNow(); }}
+              >
+                记录当下
               </button>
               {canSwap && (
                 <button
@@ -1093,19 +1080,46 @@ function App() {
             </div>
           )}
 
-          {/* 记录当下：拍照 / 写一句 */}
-          {showMemoryOptions && (
-            <div className="fuguang-memory-options">
-              <p className="fuguang-memory-prompt">留下此刻的画面或心情</p>
-              <div className="fuguang-memory-btns">
-                <button className="fuguang-memory-btn" onClick={handlePhotoCapture}>
-                  <span className="fuguang-memory-icon">📷</span>
-                  <span className="fuguang-memory-label">拍照</span>
-                </button>
-                <button className="fuguang-memory-btn" onClick={handleTextWrite}>
-                  <span className="fuguang-memory-icon">✏️</span>
-                  <span className="fuguang-memory-label">写一句</span>
-                </button>
+          {/* 信封式作答区 */}
+          {showEnvelope && (
+            <div className="fuguang-envelope">
+              <div className="fuguang-envelope-inner">
+                <div className="fuguang-envelope-header">
+                  <span className="fuguang-envelope-stamp">✉</span>
+                  <span className="fuguang-envelope-title">记录此刻</span>
+                </div>
+
+                {envelopeImage && (
+                  <div className="fuguang-envelope-photo-preview">
+                    <img src={envelopeImage} alt="预览" />
+                  </div>
+                )}
+
+                <textarea
+                  className="fuguang-envelope-text"
+                  placeholder="写一句话..."
+                  value={envelopeText}
+                  onChange={(e) => setEnvelopeText(e.target.value)}
+                  rows={2}
+                  autoFocus
+                />
+
+                <div className="fuguang-envelope-actions">
+                  <button
+                    className="fuguang-envelope-camera"
+                    onClick={handleEnvelopePhoto}
+                    aria-label="拍照"
+                  >
+                    📷
+                  </button>
+                  <button
+                    className="fuguang-envelope-submit"
+                    onClick={handleEnvelopeSubmit}
+                    disabled={!envelopeText.trim() && !envelopeImage}
+                  >
+                    存入时光
+                  </button>
+                </div>
               </div>
               <input
                 ref={cameraInputRef}
@@ -1132,36 +1146,6 @@ function App() {
           )}
 
         </div>
-
-        {/* 写一句弹窗 */}
-        {showTextInput && (
-          <div className="fuguang-mood-overlay">
-            <div className="fuguang-mood-backdrop" onClick={() => setShowTextInput(false)} />
-            <div className="fuguang-mood-sheet">
-              <p className="fuguang-mood-title">写下一句你想记住的</p>
-              <textarea
-                className="fuguang-text-input"
-                placeholder="比如：今天路过面包店，闻到了小时候的味道..."
-                value={textInputValue}
-                onChange={(e) => setTextInputValue(e.target.value)}
-                rows={3}
-                autoFocus
-              />
-              <div className="fuguang-text-input-btns">
-                <button className="fuguang-text-input-cancel" onClick={() => setShowTextInput(false)}>
-                  取消
-                </button>
-                <button
-                  className="fuguang-text-input-save"
-                  onClick={handleTextSave}
-                  disabled={!textInputValue.trim() || isAnimating}
-                >
-                  存入时光
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* 心情选择弹窗 */}
         {showMoodPicker && (
