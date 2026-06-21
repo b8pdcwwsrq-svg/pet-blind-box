@@ -458,7 +458,7 @@ function SwipeCard({
       >
         {/* 情绪水彩圆点 */}
         <div className="fuguang-timeline-mood-blob" style={{ backgroundColor: entry.moodColor || "#C8C0B8" }}>
-          {entry.response && <div className="fuguang-timeline-blob-shine" />}
+          <div className="fuguang-timeline-blob-shine" />
         </div>
 
         <div className="fuguang-timeline-card-body">
@@ -469,9 +469,6 @@ function SwipeCard({
             </div>
           )}
           <div className="fuguang-timeline-card-footer">
-            {entry.response && (
-              <span className="fuguang-timeline-card-response">「{entry.response}」</span>
-            )}
             <span className="fuguang-timeline-card-time">{entry.time}</span>
           </div>
         </div>

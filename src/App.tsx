@@ -541,17 +541,6 @@ function getTodaySolarTerm(): SolarTerm | null {
   );
 }
 
-const USER_RESPONSES = [
-  "这份温柔留在了今天的记忆里",
-  "给自己一点时间的感觉，真的很棒",
-  "认真对待小事的人，都值得被温柔对待",
-  "今天的心变得很轻",
-  "这份美好会留在今天的记忆里",
-  "愿意停下来，就是对自己最好的照顾",
-  "这份温暖正在慢慢散开",
-  "给自己一点时间，世界会变得更柔软",
-];
-
 // ===== 类型定义 =====
 type ViewMode = "main" | "monthly";
 
@@ -577,7 +566,6 @@ function App() {
     "idle",
   );
   const [currentEvent, setCurrentEvent] = useState<GlowEvent | null>(null);
-  const [responseText, setResponseText] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [memoryEntries, setMemoryEntries] = useState<MemoryEntry[]>(
     loadMemoryFromStorage(),
@@ -611,20 +599,20 @@ function App() {
     if (stored) return; // 已有数据就不种
     const today = new Date();
     const seed: MemoryEntry[] = [
-      { id: 9001, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "08:30", emoji: "☀️", eventText: "拉开窗帘，让阳光慢慢洒进来。感受清晨的第一缕光落在皮肤上的温度。", keyword: "晨光", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "给自己一点时间的感觉，真的很棒" },
-      { id: 9002, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "14:15", emoji: "☁️", eventText: "抬头看看今天的云吧。试着说说它像什么，像棉花糖还是像小猫？", keyword: "观云", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "这份温柔留在了今天的记忆里" },
-      { id: 9003, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "19:40", emoji: "🍊", eventText: "剥一个橘子，慢慢吃。吃完后闻闻手上残留的清香，那是阳光的味道。", keyword: "剥橘", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "认真对待小事的人，都值得被温柔对待" },
-      { id: 9004, date: `${today.getMonth()+1}月${today.getDate()-1}日`, month: today.getMonth()+1, time: "09:12", emoji: "🎵", eventText: "戴上耳机，听一首很久没听的轻音乐。让旋律像水一样流过心里。", keyword: "听曲", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "今天的心变得很轻" },
-      { id: 9005, date: `${today.getMonth()+1}月${today.getDate()-1}日`, month: today.getMonth()+1, time: "16:50", emoji: "🖍️", eventText: "拿一支笔，在纸上随意涂鸦五分钟。画什么都行，让手自由一点。", keyword: "涂鸦", moodId: "tired", moodLabel: "疲惫", moodColor: "#C8C888", response: "愿意停下来，就是对自己最好的照顾" },
-      { id: 9006, date: `${today.getMonth()+1}月${today.getDate()-2}日`, month: today.getMonth()+1, time: "07:55", emoji: "🍞", eventText: "试着给自己准备一份早餐吧，哪怕只是一片吐司，慢慢咀嚼。", keyword: "慢食", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "这份美好会留在今天的记忆里" },
-      { id: 9007, date: `${today.getMonth()+1}月${today.getDate()-2}日`, month: today.getMonth()+1, time: "21:10", emoji: "📖", eventText: "翻开一本书，读一段心动的句子。不用读完，只读一段就好。", keyword: "阅书", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "给自己一点时间，世界会变得更柔软" },
-      { id: 9008, date: `${today.getMonth()+1}月${today.getDate()-3}日`, month: today.getMonth()+1, time: "11:30", emoji: "🌿", eventText: "试着给房间里的绿植浇一点水，和它们说声早安，它们会听见的。", keyword: "浇花", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "这份温暖正在慢慢散开" },
-      { id: 9009, date: `${today.getMonth()+1}月${today.getDate()-3}日`, month: today.getMonth()+1, time: "17:25", emoji: "🍃", eventText: "如果愿意出门走走，试着找一片形状特别的叶子带回来。", keyword: "拾叶", moodId: "sad", moodLabel: "低落", moodColor: "#A4C4B8", response: "愿意停下来，就是对自己最好的照顾" },
-      { id: 9010, date: `${today.getMonth()+1}月${today.getDate()-4}日`, month: today.getMonth()+1, time: "12:05", emoji: "💧", eventText: "手边的水杯空了吗？去接一杯温水，感受它缓缓流过喉咙的暖意吧。", keyword: "温水", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "认真对待小事的人，都值得被温柔对待" },
-      { id: 9011, date: `${today.getMonth()+1}月${today.getDate()-4}日`, month: today.getMonth()+1, time: "20:30", emoji: "🌅", eventText: "找一个能看到天空的窗口，静静看日落。光线从金黄变成橘红再变成深蓝。", keyword: "看日落", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "这份温柔留在了今天的记忆里" },
+      { id: 9001, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "08:30", emoji: "☀️", eventText: "拉开窗帘，让阳光慢慢洒进来。感受清晨的第一缕光落在皮肤上的温度。", keyword: "晨光", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
+      { id: 9002, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "14:15", emoji: "☁️", eventText: "抬头看看今天的云吧。试着说说它像什么，像棉花糖还是像小猫？", keyword: "观云", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
+      { id: 9003, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "19:40", emoji: "🍊", eventText: "剥一个橘子，慢慢吃。吃完后闻闻手上残留的清香，那是阳光的味道。", keyword: "剥橘", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
+      { id: 9004, date: `${today.getMonth()+1}月${today.getDate()-1}日`, month: today.getMonth()+1, time: "09:12", emoji: "🎵", eventText: "戴上耳机，听一首很久没听的轻音乐。让旋律像水一样流过心里。", keyword: "听曲", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
+      { id: 9005, date: `${today.getMonth()+1}月${today.getDate()-1}日`, month: today.getMonth()+1, time: "16:50", emoji: "🖍️", eventText: "拿一支笔，在纸上随意涂鸦五分钟。画什么都行，让手自由一点。", keyword: "涂鸦", moodId: "tired", moodLabel: "疲惫", moodColor: "#C8C888", response: "" },
+      { id: 9006, date: `${today.getMonth()+1}月${today.getDate()-2}日`, month: today.getMonth()+1, time: "07:55", emoji: "🍞", eventText: "试着给自己准备一份早餐吧，哪怕只是一片吐司，慢慢咀嚼。", keyword: "慢食", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
+      { id: 9007, date: `${today.getMonth()+1}月${today.getDate()-2}日`, month: today.getMonth()+1, time: "21:10", emoji: "📖", eventText: "翻开一本书，读一段心动的句子。不用读完，只读一段就好。", keyword: "阅书", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
+      { id: 9008, date: `${today.getMonth()+1}月${today.getDate()-3}日`, month: today.getMonth()+1, time: "11:30", emoji: "🌿", eventText: "试着给房间里的绿植浇一点水，和它们说声早安，它们会听见的。", keyword: "浇花", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
+      { id: 9009, date: `${today.getMonth()+1}月${today.getDate()-3}日`, month: today.getMonth()+1, time: "17:25", emoji: "🍃", eventText: "如果愿意出门走走，试着找一片形状特别的叶子带回来。", keyword: "拾叶", moodId: "sad", moodLabel: "低落", moodColor: "#A4C4B8", response: "" },
+      { id: 9010, date: `${today.getMonth()+1}月${today.getDate()-4}日`, month: today.getMonth()+1, time: "12:05", emoji: "💧", eventText: "手边的水杯空了吗？去接一杯温水，感受它缓缓流过喉咙的暖意吧。", keyword: "温水", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
+      { id: 9011, date: `${today.getMonth()+1}月${today.getDate()-4}日`, month: today.getMonth()+1, time: "20:30", emoji: "🌅", eventText: "找一个能看到天空的窗口，静静看日落。光线从金黄变成橘红再变成深蓝。", keyword: "看日落", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
       { id: 9012, date: `${today.getMonth()+1}月${today.getDate()-5}日`, month: today.getMonth()+1, time: "10:15", emoji: "📷", eventText: "拍下了窗台上开的第一朵花，花瓣上还挂着露水。", keyword: "拍照", moodId: "", moodLabel: "留念", moodColor: "#B8C8D8", response: "", imageData: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='240'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23F5E6D3'/%3E%3Cstop offset='50%25' style='stop-color:%23E8D5C4'/%3E%3Cstop offset='100%25' style='stop-color:%23D4C8B8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='360' height='240' fill='url(%23g)'/%3E%3Ccircle cx='180' cy='100' r='30' fill='none' stroke='%23D4A5A5' stroke-width='1.5'/%3E%3Ctext x='180' y='165' text-anchor='middle' fill='%23B5A99E' font-size='13' font-family='serif'%3E📷 窗台的花%3C/text%3E%3C/svg%3E" },
-      { id: 9013, date: `${today.getMonth()+1}月${today.getDate()-5}日`, month: today.getMonth()+1, time: "18:40", emoji: "☕", eventText: "给自己泡了一杯温热的蜂蜜水，捧在手心里慢慢喝。", keyword: "蜂蜜水", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "认真对待小事的人，都值得被温柔对待" },
-      { id: 9014, date: `${today.getMonth()+1}月${today.getDate()-6}日`, month: today.getMonth()+1, time: "10:20", emoji: "🐦", eventText: "如果窗外有鸟叫声，要不要停下来听一听？数数有几种不同的旋律。", keyword: "听鸟", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "今天的心变得很轻" },
+      { id: 9013, date: `${today.getMonth()+1}月${today.getDate()-5}日`, month: today.getMonth()+1, time: "18:40", emoji: "☕", eventText: "给自己泡了一杯温热的蜂蜜水，捧在手心里慢慢喝。", keyword: "蜂蜜水", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
+      { id: 9014, date: `${today.getMonth()+1}月${today.getDate()-6}日`, month: today.getMonth()+1, time: "10:20", emoji: "🐦", eventText: "如果窗外有鸟叫声，要不要停下来听一听？数数有几种不同的旋律。", keyword: "听鸟", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
     ];
     localStorage.setItem("fuguang-memory", JSON.stringify(seed));
     setMemoryEntries(seed);
@@ -805,8 +793,6 @@ function App() {
       if (isAnimating) return;
       setIsAnimating(true);
       setShowMoodPicker(false);
-      const randomWords =
-        USER_RESPONSES[Math.floor(Math.random() * USER_RESPONSES.length)];
       const now = new Date();
       const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
       const timeStr = getTimeStr();
@@ -822,13 +808,12 @@ function App() {
           eventText,
           keyword: envelopeText.trim().slice(0, 8) || "留影",
           moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
-          response: randomWords,
+          response: "",
           imageData: envelopeImage || undefined,
         };
         setEnvelopeText("");
         setEnvelopeImage(null);
         setTimeout(() => {
-          setResponseText(randomWords);
           setPageState("collected");
           setIsAnimating(false);
           setMemoryEntries((prev) => {
@@ -837,7 +822,6 @@ function App() {
             return updated;
           });
           setTimeout(() => {
-            setResponseText("");
             setPageState("idle");
             setCurrentEvent(null);
           }, 2500);
@@ -854,10 +838,9 @@ function App() {
         eventText: currentEvent.text,
         keyword: currentEvent.keyword,
         moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
-        response: randomWords,
+        response: "",
       };
       setTimeout(() => {
-        setResponseText(randomWords);
         setPageState("collected");
         setIsAnimating(false);
         setMemoryEntries((prev) => {
@@ -866,7 +849,6 @@ function App() {
           return updated;
         });
         setTimeout(() => {
-          setResponseText("");
           setPageState("idle");
           setCurrentEvent(null);
         }, 2500);
@@ -879,7 +861,6 @@ function App() {
   const handleReset = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
-    setResponseText("");
     setShowEnvelope(false);
     setPageState("idle");
     setCurrentEvent(null);
@@ -1120,7 +1101,7 @@ function App() {
           {/* 收藏完成 */}
           {pageState === "collected" && (
             <div className="fuguang-collected">
-              <p className="fuguang-response-text">「{responseText}」</p>
+              <p className="fuguang-response-text">已存入时光印记</p>
               <button
                 onClick={(e) => { e.stopPropagation(); handleReset(); }}
                 className="fuguang-action-ghost mt-8"
