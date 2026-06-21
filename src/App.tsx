@@ -755,7 +755,7 @@ function App() {
     setDragY(0);
   }, [handleOrbClick]);
 
-  // ===== 拾取记忆：光球闪亮 → 浮现 📷/🏷️ =====
+  // ===== 拾取记忆：光球闪亮 → 浮现 📷/✏️ =====
   const handleFeelNow = useCallback(() => {
     if (isAnimating || pageState !== "revealed") return;
     setIsAnimating(true);
@@ -768,6 +768,13 @@ function App() {
     }, 800);
   }, [isAnimating, pageState]);
 
+  // ===== 记录当下：直接进拍照/写一句 =====
+  const handleRecordNow = useCallback(() => {
+    if (isAnimating) return;
+    setShowMemoryOptions(true);
+    setPageState("done");
+  }, [isAnimating]);
+
   // ===== 📷 留念：打开相机 =====
   const handlePhotoCapture = useCallback(() => {
     cameraInputRef.current?.click();
@@ -776,7 +783,7 @@ function App() {
   const handlePhotoTaken = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
-      if (!file || !currentEvent) return;
+      if (!file) return;
       // 读取图片为 base64 缩略图
       const reader = new FileReader();
       reader.onload = () => {
@@ -844,7 +851,7 @@ function App() {
           id: Date.now() + Math.random(),
           date: dateStr, month: now.getMonth() + 1, time: timeStr,
           emoji: "📷",
-          eventText: currentEvent?.text || "",
+          eventText: currentEvent?.text || "用照片记录了此刻",
           keyword: currentEvent?.keyword || "留念",
           moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
           response: randomWords,
@@ -1042,14 +1049,32 @@ function App() {
             </div>
           )}
 
-          {/* 拾取记忆 按钮 */}
+          {/* 拾取记忆 + 记录当下 按钮 */}
           {pageState === "revealed" && currentEvent && (
-            <button
-              className="fuguang-feel-now-btn"
-              onClick={(e) => { e.stopPropagation(); handleFeelNow(); }}
-            >
-              拾取记忆
-            </button>
+            <div className="fuguang-reveal-btns">
+              <button
+                className="fuguang-feel-now-btn"
+                onClick={(e) => { e.stopPropagation(); handleFeelNow(); }}
+              >
+                拾取记忆
+              </button>
+              <button
+                className="fuguang-record-now-btn"
+                onClick={(e) => { e.stopPropagation(); handleRecordNow(); }}
+              >
+                记录当下
+              </button>
+            </div>
+          )}
+          {pageState === "idle" && (
+            <div className="fuguang-record-now-wrap">
+              <button
+                className="fuguang-record-now-btn"
+                onClick={(e) => { e.stopPropagation(); handleRecordNow(); }}
+              >
+                记录当下
+              </button>
+            </div>
           )}
 
           {/* 留念 / 标记心情 选项 */}

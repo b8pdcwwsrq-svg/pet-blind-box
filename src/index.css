@@ -1333,10 +1333,15 @@ body {
   border-radius: 1px;
 }
 
-/* ===== "感受当下" 按钮 ===== */
+/* ===== 拾取记忆 + 记录当下 按钮 ===== */
+.fuguang-reveal-btns {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
 .fuguang-feel-now-btn {
-  display: block;
-  margin: 28px auto 0;
   padding: 10px 36px;
   background: none;
   border: 1px solid rgba(160, 140, 110, 0.25);
@@ -1360,6 +1365,38 @@ body {
 
 .fuguang-feel-now-btn:active {
   transform: scale(0.97);
+}
+
+.fuguang-record-now-btn {
+  padding: 10px 36px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(160, 140, 110, 0.15);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #8a7a60;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  font-weight: 300;
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 5;
+}
+
+.fuguang-record-now-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(160, 140, 110, 0.3);
+  color: #6a5a40;
+}
+
+.fuguang-record-now-btn:active {
+  transform: scale(0.97);
+}
+
+.fuguang-record-now-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
 }
 
 /* ===== 📷 留念 / 🏷️ 标记心情 选项 ===== */
