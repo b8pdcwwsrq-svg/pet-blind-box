@@ -420,8 +420,9 @@ function SwipeCard({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: gIdx * 0.04 + eIdx * 0.02, duration: 0.35, ease: "easeOut" }}
       >
-        {/* 情绪水彩圆点 */}
+        {/* 左侧时间轴 */}
         <div className="fuguang-timeline-blob-col">
+          <span className="fuguang-timeline-blob-time">{entry.time}</span>
           <div className="fuguang-timeline-mood-blob" style={{ backgroundColor: entry.moodColor || "#C8C0B8" }}>
             <div className="fuguang-timeline-blob-shine" />
           </div>
@@ -437,12 +438,9 @@ function SwipeCard({
               <img src={entry.imageData} alt={entry.keyword} className="fuguang-timeline-card-img" />
             </div>
           )}
-          <div className="fuguang-timeline-card-footer">
-            <span className="fuguang-timeline-card-time">{entry.time}</span>
-            {entry.moodLabel && (
-              <span className="fuguang-timeline-card-mood" style={{ color: entry.moodColor || "#8B7E74" }}>{entry.moodLabel}</span>
-            )}
-          </div>
+          {entry.moodLabel && (
+            <span className="fuguang-timeline-card-mood" style={{ color: entry.moodColor || "#8B7E74" }}>{entry.moodLabel}</span>
+          )}
         </div>
       </motion.div>
     </div>

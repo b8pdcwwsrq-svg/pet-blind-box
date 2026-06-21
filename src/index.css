@@ -1823,6 +1823,19 @@ body {
   width: 18px;
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.fuguang-timeline-blob-time {
+  font-size: 10px;
+  color: #c0b090;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
 /* 连接线伪元素 —— 位于blob后方，线经过blob中心但不穿过（blob z-index覆盖线上） */
@@ -1922,21 +1935,11 @@ body {
 }
 
 /* 底部：时间 + 情绪 */
-.fuguang-timeline-card-footer {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 .fuguang-timeline-card-mood {
   font-size: 11px;
   letter-spacing: 0.04em;
-}
-
-.fuguang-timeline-card-mood::before {
-  content: "·";
-  margin-right: 4px;
-  opacity: 0.4;
+  display: block;
+  margin-top: 6px;
 }
 
 .fuguang-timeline-card-response {
