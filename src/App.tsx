@@ -589,6 +589,10 @@ function App() {
   const [showMemoryOptions, setShowMemoryOptions] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [textInputValue, setTextInputValue] = useState("");
+  const [pendingRecord, setPendingRecord] = useState<{
+    imageData?: string;
+    textContent?: string;
+  } | null>(null);
 
   // ===== 拖拽 & 银河状态 =====
   const [isDragging, setIsDragging] = useState(false);
@@ -777,40 +781,11 @@ function App() {
       const reader = new FileReader();
       reader.onload = () => {
         const imageData = reader.result as string;
-        const now = new Date();
-        const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
-        const timeStr = getTimeStr();
-        const newEntry: MemoryEntry = {
-          id: Date.now() + Math.random(),
-          date: dateStr,
-          month: now.getMonth() + 1,
-          time: timeStr,
-          emoji: "📷",
-          eventText: currentEvent.text,
-          keyword: currentEvent.keyword,
-          moodId: "",
-          moodLabel: "留念",
-          moodColor: "#B8C8D8",
-          response: "",
-          imageData,
-        };
-        setMemoryEntries((prev) => {
-          const updated = [newEntry, ...prev];
-          saveMemoryToStorage(updated);
-          return updated;
-        });
+        setPendingRecord({ imageData });
         setShowMemoryOptions(false);
-        setPageState("collected");
-        setResponseText("这一刻的画面，留在了今天的记忆里");
-        // 2.5 秒后自动回到 idle
-        setTimeout(() => {
-          setResponseText("");
-          setPageState("idle");
-          setCurrentEvent(null);
-        }, 2500);
+        setShowMoodPicker(true);
       };
       reader.readAsDataURL(file);
-      // 重置 input 以便可以再次选择同一张照片
       e.target.value = "";
     },
     [currentEvent],
@@ -823,43 +798,13 @@ function App() {
     setShowTextInput(true);
   }, []);
 
-  // ===== 保存文本记录 =====
+  // ===== ✏️ 写一句 → 进情绪选择 =====
   const handleTextSave = useCallback(() => {
     const text = textInputValue.trim();
     if (!text || isAnimating) return;
-    setIsAnimating(true);
     setShowTextInput(false);
-    const now = new Date();
-    const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
-    const timeStr = getTimeStr();
-    const newEntry: MemoryEntry = {
-      id: Date.now() + Math.random(),
-      date: dateStr,
-      month: now.getMonth() + 1,
-      time: timeStr,
-      emoji: "✏️",
-      eventText: text,
-      keyword: text.slice(0, 8),
-      moodId: "",
-      moodLabel: "",
-      moodColor: "",
-      response: "",
-    };
-    setTimeout(() => {
-      setMemoryEntries((prev) => {
-        const updated = [newEntry, ...prev];
-        saveMemoryToStorage(updated);
-        return updated;
-      });
-      setResponseText("这句话，留在了今天的记忆里");
-      setPageState("collected");
-      setIsAnimating(false);
-      setTimeout(() => {
-        setResponseText("");
-        setPageState("idle");
-        setCurrentEvent(null);
-      }, 2500);
-    }, 300);
+    setPendingRecord({ textContent: text });
+    setShowMoodPicker(true);
   }, [textInputValue, isAnimating]);
 
   // ===== 🏷️ 标记心情：弹出情绪选择 =====
@@ -868,40 +813,67 @@ function App() {
     setShowMoodPicker(true);
   }, []);
 
-  // ===== 选择情绪后保存 =====
+  // ===== 选择情绪后保存（统一入口）=====
   const handleMoodSelect = useCallback(
     (mood: (typeof ALL_MOODS)[0]) => {
-      if (isAnimating || !currentEvent) return;
+      if (isAnimating) return;
       setIsAnimating(true);
       setShowMoodPicker(false);
       const randomWords =
         USER_RESPONSES[Math.floor(Math.random() * USER_RESPONSES.length)];
+      const now = new Date();
+      const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
+      const timeStr = getTimeStr();
+
+      const pending = pendingRecord;
+      setPendingRecord(null);
+
+      let newEntry: MemoryEntry;
+      if (pending?.textContent) {
+        newEntry = {
+          id: Date.now() + Math.random(),
+          date: dateStr, month: now.getMonth() + 1, time: timeStr,
+          emoji: "✏️",
+          eventText: pending.textContent,
+          keyword: pending.textContent.slice(0, 8),
+          moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
+          response: randomWords,
+        };
+      } else if (pending?.imageData) {
+        newEntry = {
+          id: Date.now() + Math.random(),
+          date: dateStr, month: now.getMonth() + 1, time: timeStr,
+          emoji: "📷",
+          eventText: currentEvent?.text || "",
+          keyword: currentEvent?.keyword || "留念",
+          moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
+          response: randomWords,
+          imageData: pending.imageData,
+        };
+      } else if (currentEvent) {
+        newEntry = {
+          id: Date.now() + Math.random(),
+          date: dateStr, month: now.getMonth() + 1, time: timeStr,
+          emoji: currentEvent.emoji,
+          eventText: currentEvent.text,
+          keyword: currentEvent.keyword,
+          moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
+          response: randomWords,
+        };
+      } else {
+        setIsAnimating(false);
+        return;
+      }
+
       setTimeout(() => {
         setResponseText(randomWords);
         setPageState("collected");
         setIsAnimating(false);
-        const now = new Date();
-        const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
-        const timeStr = getTimeStr();
-        const newEntry: MemoryEntry = {
-          id: Date.now() + Math.random(),
-          date: dateStr,
-          month: now.getMonth() + 1,
-          time: timeStr,
-          emoji: currentEvent.emoji,
-          eventText: currentEvent.text,
-          keyword: currentEvent.keyword,
-          moodId: mood.id,
-          moodLabel: mood.label,
-          moodColor: mood.color,
-          response: randomWords,
-        };
         setMemoryEntries((prev) => {
           const updated = [newEntry, ...prev];
           saveMemoryToStorage(updated);
           return updated;
         });
-
         // 2.5 秒后自动回到 idle
         setTimeout(() => {
           setResponseText("");
@@ -910,7 +882,7 @@ function App() {
         }, 2500);
       }, 800);
     },
-    [isAnimating, currentEvent],
+    [isAnimating, currentEvent, pendingRecord],
   );
 
   // ===== 再拾一段：回到 idle =====
