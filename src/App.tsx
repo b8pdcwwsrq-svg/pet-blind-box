@@ -446,6 +446,7 @@ function App() {
   const [hoveredEntry, setHoveredEntry] = useState<string | null>(null);
   const [orbFlash, setOrbFlash] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(false);
+  const [envelopeTitle, setEnvelopeTitle] = useState("");
   const [envelopeText, setEnvelopeText] = useState("");
   const [envelopeImage, setEnvelopeImage] = useState<string | null>(null);
 
@@ -627,6 +628,7 @@ function App() {
   // ===== 记录当下：打开信封 =====
   const handleRecordNow = useCallback(() => {
     if (isAnimating) return;
+    setEnvelopeTitle("");
     setEnvelopeText("");
     setEnvelopeImage(null);
     setShowEnvelope(true);
@@ -648,11 +650,12 @@ function App() {
 
   // ===== 信封提交 → 选情绪 =====
   const handleEnvelopeSubmit = useCallback(() => {
+    const title = envelopeTitle.trim();
     const text = envelopeText.trim();
-    if (!text && !envelopeImage) return;
+    if (!title && !text && !envelopeImage) return;
     setShowEnvelope(false);
     setShowMoodPicker(true);
-  }, [envelopeText, envelopeImage]);
+  }, [envelopeTitle, envelopeText, envelopeImage]);
 
   // ===== 标记心情：光球抽取后 → 选情绪 → 保存 =====
   const handleMoodTag = useCallback(() => {
@@ -669,20 +672,24 @@ function App() {
       const timeStr = getTimeStr();
 
       // 从信封来的：文字+照片+情绪
-      if (envelopeText.trim() || envelopeImage) {
+      const title = envelopeTitle.trim();
+      const body = envelopeText.trim();
+      if (title || body || envelopeImage) {
         const emoji = envelopeImage ? "📷" : "✏️";
-        const eventText = envelopeText.trim() || "用照片记录了此刻";
+        const eventText = body || title || "用照片记录了此刻";
+        const keyword = title || body.slice(0, 8) || "留影";
         const newEntry: MemoryEntry = {
           id: Date.now() + Math.random(),
           date: dateStr, month: now.getMonth() + 1, time: timeStr,
           emoji,
           eventText,
-          keyword: envelopeText.trim().slice(0, 8) || "留影",
+          keyword,
           moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
           response: "",
           imageData: envelopeImage || undefined,
           location: "房间",
         };
+        setEnvelopeTitle("");
         setEnvelopeText("");
         setEnvelopeImage(null);
         setTimeout(() => {
@@ -727,7 +734,7 @@ function App() {
         }, 2500);
       }, 600);
     },
-    [isAnimating, currentEvent, envelopeText, envelopeImage],
+    [isAnimating, currentEvent, envelopeTitle, envelopeText, envelopeImage],
   );
 
   // ===== 再拾一段：回到 idle =====
@@ -920,46 +927,43 @@ function App() {
             </div>
           )}
 
-          {/* 信封式作答区 */}
+          {/* 信纸作答区 */}
           {showEnvelope && (
-            <div className="fuguang-envelope">
-              <div className="fuguang-envelope-inner">
-                <div className="fuguang-envelope-header">
-                  <span className="fuguang-envelope-stamp">✉</span>
-                  <span className="fuguang-envelope-title">记录此刻</span>
+            <div className="fuguang-letter">
+              {envelopeImage && (
+                <div className="fuguang-letter-photo">
+                  <img src={envelopeImage} alt="预览" />
                 </div>
-
-                {envelopeImage && (
-                  <div className="fuguang-envelope-photo-preview">
-                    <img src={envelopeImage} alt="预览" />
-                  </div>
-                )}
-
-                <textarea
-                  className="fuguang-envelope-text"
-                  placeholder="写一句话..."
-                  value={envelopeText}
-                  onChange={(e) => setEnvelopeText(e.target.value)}
-                  rows={2}
-                  autoFocus
-                />
-
-                <div className="fuguang-envelope-actions">
-                  <button
-                    className="fuguang-envelope-camera"
-                    onClick={handleEnvelopePhoto}
-                    aria-label="拍照"
-                  >
-                    📷
-                  </button>
-                  <button
-                    className="fuguang-envelope-submit"
-                    onClick={handleEnvelopeSubmit}
-                    disabled={!envelopeText.trim() && !envelopeImage}
-                  >
-                    存入时光
-                  </button>
-                </div>
+              )}
+              <input
+                className="fuguang-letter-title"
+                placeholder="标题"
+                value={envelopeTitle}
+                onChange={(e) => setEnvelopeTitle(e.target.value)}
+                autoFocus
+              />
+              <textarea
+                className="fuguang-letter-body"
+                placeholder="正文..."
+                value={envelopeText}
+                onChange={(e) => setEnvelopeText(e.target.value)}
+                rows={4}
+              />
+              <div className="fuguang-letter-foot">
+                <button
+                  className="fuguang-letter-camera"
+                  onClick={handleEnvelopePhoto}
+                  aria-label="拍照"
+                >
+                  📷
+                </button>
+                <button
+                  className="fuguang-letter-submit"
+                  onClick={handleEnvelopeSubmit}
+                  disabled={!envelopeTitle.trim() && !envelopeText.trim() && !envelopeImage}
+                >
+                  存入时光
+                </button>
               </div>
               <input
                 ref={cameraInputRef}

@@ -1435,52 +1435,79 @@ body {
   animation: breathe-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* ===== 信封作答区 ===== */
-.fuguang-envelope {
+/* ===== 信纸作答区 ===== */
+.fuguang-letter {
   position: relative;
   z-index: 10;
-  margin: 20px 0;
+  margin: 16px 0;
+  padding: 24px 20px 18px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    rgba(180,160,130,0.08) 31px,
+    rgba(180,160,130,0.08) 32px
+  );
+  background-size: 100% 32px;
+  background-color: #FDFAF5;
 }
 
-.fuguang-envelope-inner {
-  background: #FDFAF5;
-  border: 1px solid rgba(180, 160, 130, 0.15);
-  border-radius: 16px;
-  padding: 20px 18px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+.fuguang-letter-photo {
+  margin-bottom: 16px;
+  border-radius: 4px;
+  overflow: hidden;
 }
+.fuguang-letter-photo img { display: block; width: 100%; max-height: 180px; object-fit: cover; }
 
-.fuguang-envelope-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.fuguang-envelope-stamp { font-size: 20px; opacity: 0.5; }
-.fuguang-envelope-title { font-size: 13px; color: #8a7a60; letter-spacing: 0.08em; font-weight: 350; }
-
-.fuguang-envelope-photo-preview { margin-bottom: 12px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(180,160,130,0.08); }
-.fuguang-envelope-photo-preview img { display: block; width: 100%; max-height: 160px; object-fit: cover; }
-
-.fuguang-envelope-text {
-  width: 100%; padding: 12px 14px;
-  background: rgba(255,255,255,0.6); border: 1px solid rgba(180,160,130,0.1); border-radius: 10px;
-  font-family: inherit; font-size: 14px; color: #5a5040; line-height: 1.7; letter-spacing: 0.04em;
-  resize: none; outline: none; margin-bottom: 12px;
+.fuguang-letter-title {
+  display: block;
+  width: 100%;
+  padding: 0 0 4px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 400;
+  color: #3a3530;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  line-height: 32px;
 }
-.fuguang-envelope-text::placeholder { color: #c0b8a8; }
-.fuguang-envelope-text:focus { border-color: rgba(180,160,130,0.25); }
-
-.fuguang-envelope-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.fuguang-envelope-camera {
-  width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(180,160,130,0.12);
-  background: rgba(255,255,255,0.4); font-size: 18px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all 0.2s ease;
+.fuguang-letter-title::placeholder { color: #d0c8b8; }
+.fuguang-letter-body {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  color: #5a5040;
+  line-height: 32px;
+  letter-spacing: 0.04em;
+  font-weight: 320;
+  resize: none;
+  min-height: 96px;
 }
-.fuguang-envelope-camera:hover { background: rgba(255,255,255,0.6); border-color: rgba(180,160,130,0.25); }
-.fuguang-envelope-camera:active { transform: scale(0.94); }
+.fuguang-letter-body::placeholder { color: #d0c8b8; }
 
-.fuguang-envelope-submit {
-  flex: 1; padding: 11px 20px; border-radius: 10px; border: none; background: #C4C9B7;
-  font-family: inherit; font-size: 14px; color: #fff; cursor: pointer; letter-spacing: 0.06em; transition: all 0.2s ease;
+.fuguang-letter-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.fuguang-letter-camera {
+  width: 38px; height: 38px; border-radius: 50%; border: none;
+  background: rgba(180,160,130,0.06); font-size: 16px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.2s;
 }
-.fuguang-envelope-submit:disabled { opacity: 0.3; cursor: default; }
-.fuguang-envelope-submit:not(:disabled):active { background: #b0b5a3; }
+.fuguang-letter-camera:hover { background: rgba(180,160,130,0.14); }
+.fuguang-letter-camera:active { transform: scale(0.94); }
+
+.fuguang-letter-submit {
+  flex: 1; padding: 9px 20px; border-radius: 999px; border: none; background: #C4C9B7;
+  font-family: inherit; font-size: 13px; color: #fff; cursor: pointer; letter-spacing: 0.06em; transition: all 0.2s ease;
+}
+.fuguang-letter-submit:disabled { opacity: 0.3; cursor: default; }
+.fuguang-letter-submit:not(:disabled):active { background: #b0b5a3; }
 
 .fuguang-memory-prompt {
   font-size: 12px;
