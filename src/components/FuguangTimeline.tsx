@@ -429,6 +429,12 @@ function SwipeCard({
         </div>
 
         <div className="fuguang-timeline-card-body">
+          <div className="fuguang-timeline-card-top">
+            <span className="fuguang-timeline-card-keyword">{entry.keyword}</span>
+            {entry.moodLabel && (
+              <span className="fuguang-timeline-card-mood" style={{ color: entry.moodColor || "#8B7E74" }}>{entry.moodLabel}</span>
+            )}
+          </div>
           <p className="fuguang-timeline-card-text">{entry.eventText}</p>
           {entry.location && (
             <span className="fuguang-timeline-card-location">{entry.location}</span>
@@ -437,9 +443,6 @@ function SwipeCard({
             <div className="fuguang-timeline-card-image">
               <img src={entry.imageData} alt={entry.keyword} className="fuguang-timeline-card-img" />
             </div>
-          )}
-          {entry.moodLabel && (
-            <span className="fuguang-timeline-card-mood" style={{ color: entry.moodColor || "#8B7E74" }}>{entry.moodLabel}</span>
           )}
         </div>
       </motion.div>

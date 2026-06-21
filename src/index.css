@@ -1898,6 +1898,26 @@ body {
   min-width: 0;
 }
 
+.fuguang-timeline-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.fuguang-timeline-card-keyword {
+  font-size: 14px;
+  font-weight: 450;
+  color: #4a3a28;
+  letter-spacing: 0.05em;
+}
+
+.fuguang-timeline-card-mood {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
 /* 正文 */
 .fuguang-timeline-card-text {
   font-size: 14px;
@@ -1934,13 +1954,7 @@ body {
   border-radius: 4px;
 }
 
-/* 底部：时间 + 情绪 */
-.fuguang-timeline-card-mood {
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  display: block;
-  margin-top: 6px;
-}
+/* 旧样式，已被 card-top 替代 */
 
 .fuguang-timeline-card-response {
   font-size: 11px;
