@@ -573,7 +573,7 @@ interface MemoryEntry {
 // ===== 主组件 =====
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>("main");
-  const [pageState, setPageState] = useState<"idle" | "revealed" | "done" | "collected">(
+  const [pageState, setPageState] = useState<"idle" | "revealed" | "collected">(
     "idle",
   );
   const [currentEvent, setCurrentEvent] = useState<GlowEvent | null>(null);
@@ -586,13 +586,11 @@ function App() {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [hoveredEntry, setHoveredEntry] = useState<string | null>(null);
   const [orbFlash, setOrbFlash] = useState(false);
+  const [swapCount, setSwapCount] = useState(0);
+  const [canSwap, setCanSwap] = useState(true);
   const [showMemoryOptions, setShowMemoryOptions] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [textInputValue, setTextInputValue] = useState("");
-  const [pendingRecord, setPendingRecord] = useState<{
-    imageData?: string;
-    textContent?: string;
-  } | null>(null);
 
   // ===== 拖拽 & 银河状态 =====
   const [isDragging, setIsDragging] = useState(false);
@@ -675,10 +673,31 @@ function App() {
       suitableEvents[Math.floor(Math.random() * suitableEvents.length)];
     setTimeout(() => {
       setCurrentEvent(randomEvent);
+      setSwapCount(0);
+      setCanSwap(true);
       setPageState("revealed");
       setIsAnimating(false);
     }, 500);
   }, [isAnimating, pageState]);
+
+  // ===== 换一位任务 =====
+  const drawDifferentTask = useCallback((current: typeof ALL_EVENTS[0] | null) => {
+    const others = ALL_EVENTS.filter((t) => t.id !== current?.id);
+    return others[Math.floor(Math.random() * others.length)];
+  }, []);
+
+  const handleSwap = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    const newTask = drawDifferentTask(currentEvent);
+    setTimeout(() => {
+      setCurrentEvent(newTask);
+      const newCount = swapCount + 1;
+      setSwapCount(newCount);
+      if (newCount >= 1) setCanSwap(false);
+      setIsAnimating(false);
+    }, 400);
+  }, [isAnimating, currentEvent, swapCount, drawDifferentTask]);
 
   // ===== 拖拽手势：长按 200ms 激活 =====
   const THRESHOLD_PX = typeof window !== "undefined" ? window.innerHeight * 0.2 : 120;
@@ -755,27 +774,13 @@ function App() {
     setDragY(0);
   }, [handleOrbClick]);
 
-  // ===== 拾取记忆：光球闪亮 → 浮现 📷/✏️ =====
-  const handleFeelNow = useCallback(() => {
-    if (isAnimating || pageState !== "revealed") return;
-    setIsAnimating(true);
-    setOrbFlash(true);
-    setTimeout(() => {
-      setPageState("done");
-      setShowMemoryOptions(true);
-      setOrbFlash(false);
-      setIsAnimating(false);
-    }, 800);
-  }, [isAnimating, pageState]);
-
-  // ===== 记录当下：直接进拍照/写一句 =====
+  // ===== 记录当下：从首页直接弹拍照/写一句 =====
   const handleRecordNow = useCallback(() => {
     if (isAnimating) return;
     setShowMemoryOptions(true);
-    setPageState("done");
   }, [isAnimating]);
 
-  // ===== 📷 留念：打开相机 =====
+  // ===== 📷 拍照 → 直接保存 =====
   const handlePhotoCapture = useCallback(() => {
     cameraInputRef.current?.click();
   }, []);
@@ -784,46 +789,85 @@ function App() {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
-      // 读取图片为 base64 缩略图
       const reader = new FileReader();
       reader.onload = () => {
         const imageData = reader.result as string;
-        setPendingRecord({ imageData });
+        const now = new Date();
+        const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
+        const timeStr = getTimeStr();
+        const newEntry: MemoryEntry = {
+          id: Date.now() + Math.random(),
+          date: dateStr, month: now.getMonth() + 1, time: timeStr,
+          emoji: "📷",
+          eventText: "用照片记录了此刻",
+          keyword: "留影",
+          moodId: "", moodLabel: "", moodColor: "",
+          response: "",
+          imageData,
+        };
+        setMemoryEntries((prev) => {
+          const updated = [newEntry, ...prev];
+          saveMemoryToStorage(updated);
+          return updated;
+        });
         setShowMemoryOptions(false);
-        setShowMoodPicker(true);
+        setPageState("collected");
+        setResponseText("这一刻的画面，留在了今天的记忆里");
+        setTimeout(() => {
+          setResponseText("");
+          setPageState("idle");
+        }, 2200);
       };
       reader.readAsDataURL(file);
       e.target.value = "";
     },
-    [currentEvent],
+    [],
   );
 
-  // ===== ✏️ 写一句：打开文本输入 =====
+  // ===== ✏️ 写一句 → 直接保存 =====
   const handleTextWrite = useCallback(() => {
     setShowMemoryOptions(false);
     setTextInputValue("");
     setShowTextInput(true);
   }, []);
 
-  // ===== ✏️ 写一句 → 进情绪选择 =====
   const handleTextSave = useCallback(() => {
     const text = textInputValue.trim();
     if (!text || isAnimating) return;
+    const now = new Date();
+    const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
+    const timeStr = getTimeStr();
+    const newEntry: MemoryEntry = {
+      id: Date.now() + Math.random(),
+      date: dateStr, month: now.getMonth() + 1, time: timeStr,
+      emoji: "✏️",
+      eventText: text,
+      keyword: text.slice(0, 8),
+      moodId: "", moodLabel: "", moodColor: "",
+      response: "",
+    };
+    setMemoryEntries((prev) => {
+      const updated = [newEntry, ...prev];
+      saveMemoryToStorage(updated);
+      return updated;
+    });
     setShowTextInput(false);
-    setPendingRecord({ textContent: text });
-    setShowMoodPicker(true);
+    setPageState("collected");
+    setResponseText("这句话，留在了今天的记忆里");
+    setTimeout(() => {
+      setResponseText("");
+      setPageState("idle");
+    }, 2200);
   }, [textInputValue, isAnimating]);
 
-  // ===== 🏷️ 标记心情：弹出情绪选择 =====
+  // ===== 标记心情：光球抽取后 → 选情绪 → 保存 =====
   const handleMoodTag = useCallback(() => {
-    setShowMemoryOptions(false);
     setShowMoodPicker(true);
   }, []);
 
-  // ===== 选择情绪后保存（统一入口）=====
   const handleMoodSelect = useCallback(
     (mood: (typeof ALL_MOODS)[0]) => {
-      if (isAnimating) return;
+      if (isAnimating || !currentEvent) return;
       setIsAnimating(true);
       setShowMoodPicker(false);
       const randomWords =
@@ -831,47 +875,15 @@ function App() {
       const now = new Date();
       const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
       const timeStr = getTimeStr();
-
-      const pending = pendingRecord;
-      setPendingRecord(null);
-
-      let newEntry: MemoryEntry;
-      if (pending?.textContent) {
-        newEntry = {
-          id: Date.now() + Math.random(),
-          date: dateStr, month: now.getMonth() + 1, time: timeStr,
-          emoji: "✏️",
-          eventText: pending.textContent,
-          keyword: pending.textContent.slice(0, 8),
-          moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
-          response: randomWords,
-        };
-      } else if (pending?.imageData) {
-        newEntry = {
-          id: Date.now() + Math.random(),
-          date: dateStr, month: now.getMonth() + 1, time: timeStr,
-          emoji: "📷",
-          eventText: currentEvent?.text || "用照片记录了此刻",
-          keyword: currentEvent?.keyword || "留念",
-          moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
-          response: randomWords,
-          imageData: pending.imageData,
-        };
-      } else if (currentEvent) {
-        newEntry = {
-          id: Date.now() + Math.random(),
-          date: dateStr, month: now.getMonth() + 1, time: timeStr,
-          emoji: currentEvent.emoji,
-          eventText: currentEvent.text,
-          keyword: currentEvent.keyword,
-          moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
-          response: randomWords,
-        };
-      } else {
-        setIsAnimating(false);
-        return;
-      }
-
+      const newEntry: MemoryEntry = {
+        id: Date.now() + Math.random(),
+        date: dateStr, month: now.getMonth() + 1, time: timeStr,
+        emoji: currentEvent.emoji,
+        eventText: currentEvent.text,
+        keyword: currentEvent.keyword,
+        moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
+        response: randomWords,
+      };
       setTimeout(() => {
         setResponseText(randomWords);
         setPageState("collected");
@@ -881,15 +893,14 @@ function App() {
           saveMemoryToStorage(updated);
           return updated;
         });
-        // 2.5 秒后自动回到 idle
         setTimeout(() => {
           setResponseText("");
           setPageState("idle");
           setCurrentEvent(null);
         }, 2500);
-      }, 800);
+      }, 600);
     },
-    [isAnimating, currentEvent, pendingRecord],
+    [isAnimating, currentEvent],
   );
 
   // ===== 再拾一段：回到 idle =====
@@ -1043,29 +1054,34 @@ function App() {
           })()}
 
           {/* 事件卡片 */}
-          {(pageState === "revealed" || pageState === "done") && currentEvent && (
+          {pageState === "revealed" && currentEvent && (
             <div className="fuguang-reveal">
               <p className="fuguang-event-text">{currentEvent.text}</p>
             </div>
           )}
 
-          {/* 拾取记忆 + 记录当下 按钮 */}
+          {/* 光球抽取后：标记心情 + 换一位任务 */}
           {pageState === "revealed" && currentEvent && (
             <div className="fuguang-reveal-btns">
               <button
                 className="fuguang-feel-now-btn"
-                onClick={(e) => { e.stopPropagation(); handleFeelNow(); }}
+                onClick={(e) => { e.stopPropagation(); handleMoodTag(); }}
               >
-                拾取记忆
+                标记心情
               </button>
-              <button
-                className="fuguang-record-now-btn"
-                onClick={(e) => { e.stopPropagation(); handleRecordNow(); }}
-              >
-                记录当下
-              </button>
+              {canSwap && (
+                <button
+                  className="fuguang-record-now-btn"
+                  onClick={(e) => { e.stopPropagation(); handleSwap(); }}
+                  disabled={isAnimating}
+                >
+                  换一位任务
+                </button>
+              )}
             </div>
           )}
+
+          {/* 首页：记录当下按钮 */}
           {pageState === "idle" && (
             <div className="fuguang-record-now-wrap">
               <button
@@ -1077,21 +1093,20 @@ function App() {
             </div>
           )}
 
-          {/* 留念 / 标记心情 选项 */}
-          {pageState === "done" && showMemoryOptions && (
+          {/* 记录当下：拍照 / 写一句 */}
+          {showMemoryOptions && (
             <div className="fuguang-memory-options">
-              <p className="fuguang-memory-prompt">想要记录下此刻的画面或心情吗？</p>
+              <p className="fuguang-memory-prompt">留下此刻的画面或心情</p>
               <div className="fuguang-memory-btns">
                 <button className="fuguang-memory-btn" onClick={handlePhotoCapture}>
                   <span className="fuguang-memory-icon">📷</span>
-                  <span className="fuguang-memory-label">留念</span>
+                  <span className="fuguang-memory-label">拍照</span>
                 </button>
                 <button className="fuguang-memory-btn" onClick={handleTextWrite}>
                   <span className="fuguang-memory-icon">✏️</span>
                   <span className="fuguang-memory-label">写一句</span>
                 </button>
               </div>
-              {/* 隐藏相机 input */}
               <input
                 ref={cameraInputRef}
                 type="file"
@@ -1104,7 +1119,7 @@ function App() {
           )}
 
           {/* 收藏完成 */}
-          {pageState === "collected" && currentEvent && (
+          {pageState === "collected" && (
             <div className="fuguang-collected">
               <p className="fuguang-response-text">「{responseText}」</p>
               <button
