@@ -456,18 +456,12 @@ function SwipeCard({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: gIdx * 0.04 + eIdx * 0.02, duration: 0.35, ease: "easeOut" }}
       >
-        <div
-          className="fuguang-timeline-avatar"
-          style={{
-            background: entry.moodColor
-              ? `linear-gradient(135deg, ${entry.moodColor}22, ${entry.moodColor}44)`
-              : "linear-gradient(135deg, #F5E6D3, #EDE0D4)",
-          }}
-        >
-          <span className="fuguang-timeline-avatar-emoji">{entry.emoji}</span>
+        {/* 情绪水彩圆点 */}
+        <div className="fuguang-timeline-mood-blob" style={{ backgroundColor: entry.moodColor || "#C8C0B8" }}>
+          {entry.response && <div className="fuguang-timeline-blob-shine" />}
         </div>
+
         <div className="fuguang-timeline-card-body">
-          <span className="fuguang-timeline-card-keyword">{entry.keyword}</span>
           <p className="fuguang-timeline-card-text">{entry.eventText}</p>
           {entry.imageData && (
             <div className="fuguang-timeline-card-image">
@@ -475,19 +469,9 @@ function SwipeCard({
             </div>
           )}
           <div className="fuguang-timeline-card-footer">
-            <div className="fuguang-timeline-card-footer-left">
-              {entry.moodColor && (
-                <span className="fuguang-timeline-card-mood-dot" style={{ backgroundColor: entry.moodColor }} />
-              )}
-              {entry.moodLabel && (
-                <span className="fuguang-timeline-card-mood" style={{ color: entry.moodColor || "#8B7E74" }}>
-                  {entry.moodLabel}
-                </span>
-              )}
-              {entry.response && (
-                <span className="fuguang-timeline-card-response">「{entry.response}」</span>
-              )}
-            </div>
+            {entry.response && (
+              <span className="fuguang-timeline-card-response">「{entry.response}」</span>
+            )}
             <span className="fuguang-timeline-card-time">{entry.time}</span>
           </div>
         </div>

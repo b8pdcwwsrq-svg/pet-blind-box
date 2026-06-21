@@ -1788,10 +1788,10 @@ body {
   margin: 0;
 }
 
-/* 卡片 —— 头像在左上，内容在右下 */
+/* 卡片 —— 水彩圆点 + 纯文本 */
 .fuguang-timeline-card {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   padding: 14px 0;
   border-bottom: 1px solid rgba(180, 160, 130, 0.07);
   transition: background 0.2s ease;
@@ -1801,36 +1801,44 @@ body {
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* 头像 */
-.fuguang-timeline-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* 情绪水彩圆点 */
+.fuguang-timeline-mood-blob {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 3px;
+  position: relative;
+  box-shadow:
+    0 0 8px rgba(0,0,0,0.04),
+    inset 0 0 4px rgba(255,255,255,0.3);
+  /* 边缘不规整用水彩box-shadow模拟 —— 微偏移的半透明光晕 */
 }
 
-.fuguang-timeline-avatar-emoji {
-  font-size: 20px;
+.fuguang-timeline-mood-blob::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0.25;
+  filter: blur(3px);
+}
+
+.fuguang-timeline-blob-shine {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
 }
 
 /* 内容区 */
 .fuguang-timeline-card-body {
   flex: 1;
   min-width: 0;
-}
-
-/* 关键词 —— 类似朋友圈昵称 */
-.fuguang-timeline-card-keyword {
-  font-size: 14px;
-  font-weight: 450;
-  color: #4a3a28;
-  letter-spacing: 0.05em;
-  display: block;
-  margin-bottom: 4px;
 }
 
 /* 正文 */
@@ -1858,31 +1866,12 @@ body {
   border-radius: 4px;
 }
 
-/* 底部：情绪 + 时间 */
+/* 底部：时间 + 回应 */
 .fuguang-timeline-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-}
-
-.fuguang-timeline-card-footer-left {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.fuguang-timeline-card-mood-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.fuguang-timeline-card-mood {
-  font-size: 11px;
-  letter-spacing: 0.04em;
 }
 
 .fuguang-timeline-card-response {
@@ -1898,6 +1887,7 @@ body {
   font-weight: 300;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* ===== 拖拽事件捕获层 ===== */
