@@ -253,12 +253,12 @@ function GlassJar({
         ctx.fill();
 
         // 十字光芒
-        const rayAlpha = 0.35 * bright;
-        if (rayAlpha > 0.05) {
+        const rayAlpha = 0.18 * bright;
+        if (rayAlpha > 0.03) {
           ctx.save();
           ctx.globalAlpha = rayAlpha;
-          const rayLen = s.radius * 3.5;
-          const rayW = s.radius * 0.4;
+          const rayLen = s.radius * 2.2;
+          const rayW = s.radius * 0.3;
           // 水平光芒
           const hGrad = ctx.createLinearGradient(px - rayLen, py, px + rayLen, py);
           hGrad.addColorStop(0, "transparent");
