@@ -586,8 +586,6 @@ function App() {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [hoveredEntry, setHoveredEntry] = useState<string | null>(null);
   const [orbFlash, setOrbFlash] = useState(false);
-  const [swapCount, setSwapCount] = useState(0);
-  const [canSwap, setCanSwap] = useState(true);
   const [showEnvelope, setShowEnvelope] = useState(false);
   const [envelopeText, setEnvelopeText] = useState("");
   const [envelopeImage, setEnvelopeImage] = useState<string | null>(null);
@@ -661,9 +659,11 @@ function App() {
     };
   }, []);
 
-  // ===== 点击光球：抽取今日小事 =====
+  // ===== 点击光球/卡片：idle抽取 或 revealed换一条 =====
   const handleOrbClick = useCallback(() => {
-    if (isAnimating || pageState !== "idle") return;
+    if (isAnimating) return;
+    if (pageState === "revealed") { handleSwap(); return; }
+    if (pageState !== "idle") return;
     setIsAnimating(true);
     const period = getCurrentPeriod();
     const suitableEvents = ALL_EVENTS.filter(
@@ -673,31 +673,22 @@ function App() {
       suitableEvents[Math.floor(Math.random() * suitableEvents.length)];
     setTimeout(() => {
       setCurrentEvent(randomEvent);
-      setSwapCount(0);
-      setCanSwap(true);
       setPageState("revealed");
       setIsAnimating(false);
     }, 500);
   }, [isAnimating, pageState]);
 
-  // ===== 换一位任务 =====
-  const drawDifferentTask = useCallback((current: typeof ALL_EVENTS[0] | null) => {
-    const others = ALL_EVENTS.filter((t) => t.id !== current?.id);
-    return others[Math.floor(Math.random() * others.length)];
-  }, []);
-
+  // ===== 在revealed状态点击光球/卡片 → 换一条小事 =====
   const handleSwap = useCallback(() => {
-    if (isAnimating) return;
+    if (isAnimating || pageState !== "revealed") return;
     setIsAnimating(true);
-    const newTask = drawDifferentTask(currentEvent);
+    const others = ALL_EVENTS.filter((t) => t.id !== currentEvent?.id);
+    const newTask = others[Math.floor(Math.random() * others.length)];
     setTimeout(() => {
       setCurrentEvent(newTask);
-      const newCount = swapCount + 1;
-      setSwapCount(newCount);
-      if (newCount >= 1) setCanSwap(false);
       setIsAnimating(false);
-    }, 400);
-  }, [isAnimating, currentEvent, swapCount, drawDifferentTask]);
+    }, 350);
+  }, [isAnimating, pageState, currentEvent]);
 
   // ===== 拖拽手势：长按 200ms 激活 =====
   const THRESHOLD_PX = typeof window !== "undefined" ? window.innerHeight * 0.2 : 120;
@@ -1041,7 +1032,7 @@ function App() {
             </div>
           )}
 
-          {/* 光球抽取后：标记心情 / 记录当下 / 换一位任务 */}
+          {/* 光球抽取后：标记心情 / 记录当下 */}
           {pageState === "revealed" && currentEvent && (
             <div className="fuguang-reveal-btns">
               <button
@@ -1056,16 +1047,10 @@ function App() {
               >
                 记录当下
               </button>
-              {canSwap && (
-                <button
-                  className="fuguang-record-now-btn"
-                  onClick={(e) => { e.stopPropagation(); handleSwap(); }}
-                  disabled={isAnimating}
-                >
-                  换一位任务
-                </button>
-              )}
             </div>
+          )}
+          {pageState === "revealed" && (
+            <p className="fuguang-swap-hint">再次点击光球或卡片可以换一条</p>
           )}
 
           {/* 首页：记录当下按钮 */}
