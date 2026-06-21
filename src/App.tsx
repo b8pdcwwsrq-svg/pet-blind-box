@@ -941,7 +941,7 @@ function App() {
                       : "translateY(0)",
                     transition: isDragging ? "none" : "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
                   }}
-                  onClick={() => { if (pageState === "idle" && !isDragging) handleOrbClick(); }}
+                  onClick={() => { if ((pageState === "idle" || pageState === "revealed") && !isDragging) handleOrbClick(); }}
                   onPointerDown={handleOrbPointerDown}
                   onPointerMove={handleOrbPointerMove}
                   onPointerUp={handleOrbPointerUp}
