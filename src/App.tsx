@@ -677,8 +677,13 @@ function App() {
       const body = envelopeText.trim();
       if (title || body || envelopeImage) {
         const emoji = envelopeImage ? "📷" : "✏️";
-        const keyword = title || body.slice(0, 8) || "留影";
-        const eventText = body || (title ? "" : "用照片记录了此刻");
+        // 关键词：标题优先，无标题取正文前8字，都没有用留影
+        const k = title || body.slice(0, 8);
+        // 正文：只有写了正文才显示，避免和关键词重复
+        const t = body && body !== k ? body : "";
+        if (!t && !k && !envelopeImage) return;
+        const keyword = k || "留影";
+        const eventText = t || "";
         const newEntry: MemoryEntry = {
           id: Date.now() + Math.random(),
           date: dateStr, month: now.getMonth() + 1, time: timeStr,
