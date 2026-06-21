@@ -385,6 +385,16 @@ body {
   filter: blur(4px);
 }
 
+.fuguang-event-location {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  color: #b0a090;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+  margin-top: 8px;
+}
+
 .fuguang-event-text {
   font-size: 15px;
   color: #3a3530;
@@ -1876,6 +1886,16 @@ body {
   letter-spacing: 0.04em;
   font-weight: 320;
   margin: 0 0 8px;
+}
+
+/* 位置标签 */
+.fuguang-timeline-card-location {
+  display: inline-block;
+  font-size: 10px;
+  color: #b0a090;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  opacity: 0.65;
 }
 
 /* 照片 */

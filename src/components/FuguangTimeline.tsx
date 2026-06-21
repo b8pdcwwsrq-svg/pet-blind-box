@@ -14,6 +14,7 @@ interface MemoryEntry {
   moodColor: string;
   response: string;
   imageData?: string;
+  location: string;
 }
 
 interface FuguangTimelineProps {
@@ -468,6 +469,9 @@ function SwipeCard({
 
         <div className="fuguang-timeline-card-body">
           <p className="fuguang-timeline-card-text">{entry.eventText}</p>
+          {entry.location && (
+            <span className="fuguang-timeline-card-location">{entry.location}</span>
+          )}
           {entry.imageData && (
             <div className="fuguang-timeline-card-image">
               <img src={entry.imageData} alt={entry.keyword} className="fuguang-timeline-card-img" />

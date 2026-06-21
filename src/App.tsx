@@ -9,205 +9,73 @@ interface GlowEvent {
   text: string;
   keyword: string;
   period: string[];
+  location: string;
 }
 
 const ALL_EVENTS: GlowEvent[] = [
-  {
-    id: 1,
-    emoji: "☀️",
-    text: "要不要试着拉开窗帘，让阳光慢慢洒进来？感受清晨的第一缕光落在皮肤上的温度。",
-    keyword: "晨光",
-    period: ["morning"],
-  },
-  {
-    id: 2,
-    emoji: "🍞",
-    text: "试着给自己准备一份早餐吧，哪怕只是一片吐司，慢慢咀嚼，感受食物本来的味道。",
-    keyword: "慢食",
-    period: ["morning"],
-  },
-  {
-    id: 3,
-    emoji: "🐦",
-    text: "如果窗外有鸟叫声，要不要停下来听一听？数数有几种不同的旋律。",
-    keyword: "听鸟",
-    period: ["morning"],
-  },
-  {
-    id: 4,
-    emoji: "💧",
-    text: "手边的水杯空了吗？去接一杯温水，感受它缓缓流过喉咙的暖意吧。",
-    keyword: "温水",
-    period: ["morning", "afternoon", "evening"],
-  },
-  {
-    id: 5,
-    emoji: "🌿",
-    text: "试着给房间里的绿植浇一点水，和它们说声早安，它们会听见的。",
-    keyword: "浇花",
-    period: ["morning"],
-  },
-  {
-    id: 6,
-    emoji: "🌤️",
-    text: "如果方便的话，拍一张今天早上的天空吧，记录下此刻独一无二的光线。",
-    keyword: "天光",
-    period: ["morning"],
-  },
-  {
-    id: 7,
-    emoji: "🎵",
-    text: "要不要戴上耳机，听一首很久没听的轻音乐？让旋律像水一样流过心里。",
-    keyword: "听曲",
-    period: ["anytime"],
-  },
-  {
-    id: 8,
-    emoji: "☁️",
-    text: "如果眼睛累了，抬头看看今天的云吧。试着说说它像什么，像棉花糖还是像小猫？",
-    keyword: "观云",
-    period: ["morning", "afternoon"],
-  },
-  {
-    id: 9,
-    emoji: "📖",
-    text: "试着翻开一本书，读一段心动的句子。不用读完，只读一段就好。",
-    keyword: "阅书",
-    period: ["anytime"],
-  },
-  {
-    id: 10,
-    emoji: "🖍️",
-    text: "拿一支笔，在纸上随意涂鸦五分钟吧。画什么都行，让手自由一点。",
-    keyword: "涂鸦",
-    period: ["anytime"],
-  },
-  {
-    id: 11,
-    emoji: "🍊",
-    text: "试着剥一个橘子，慢慢吃。吃完后闻闻手上残留的清香，那是阳光的味道。",
-    keyword: "剥橘",
-    period: ["afternoon", "evening"],
-  },
-  {
-    id: 12,
-    emoji: "🍃",
-    text: "如果愿意出门走走，试着找一片形状特别的叶子带回来，当作今天的小收藏。",
-    keyword: "拾叶",
-    period: ["morning", "afternoon"],
-  },
-  {
-    id: 13,
-    emoji: "🎐",
-    text: "试着打开窗户，闭上眼睛感受三分钟的风。它从很远的地方来，专门路过这里。",
-    keyword: "听风",
-    period: ["anytime"],
-  },
-  {
-    id: 14,
-    emoji: "🧦",
-    text: "换上最舒服的那双袜子吧，让脚趾也放松一下，它们今天走了不少路呢。",
-    keyword: "舒足",
-    period: ["anytime"],
-  },
-  {
-    id: 15,
-    emoji: "🫧",
-    text: "试着认真洗一次手，慢慢搓出一个大大的泡泡，看着它折射出彩虹的颜色。",
-    keyword: "洗手",
-    period: ["anytime"],
-  },
-  {
-    id: 16,
-    emoji: "🌅",
-    text: "找一个窗户，看看今天天空的颜色吧。傍晚的天空每天都在画不同的画。",
-    keyword: "晚霞",
-    period: ["evening"],
-  },
-  {
-    id: 17,
-    emoji: "🕯️",
-    text: "如果家里有香薰蜡烛，试着点一支，看火焰轻轻跳动，像一颗小小的心脏。",
-    keyword: "烛光",
-    period: ["evening", "night"],
-  },
-  {
-    id: 18,
-    emoji: "🍵",
-    text: "试着泡一杯热茶，捧在手里感受它的温度。不用急着喝，先暖一暖手心。",
-    keyword: "品茶",
-    period: ["afternoon", "evening", "night"],
-  },
-  {
-    id: 19,
-    emoji: "🧸",
-    text: "抱抱身边的玩偶吧，告诉它今天发生了什么。它是这个世界上最好的倾听者。",
-    keyword: "拥抱",
-    period: ["evening", "night"],
-  },
-  {
-    id: 20,
-    emoji: "🌙",
-    text: "看看今晚有没有月亮？如果有，试着拍下来，留作今天的纪念。",
-    keyword: "望月",
-    period: ["evening", "night"],
-  },
-  {
-    id: 21,
-    emoji: "📝",
-    text: "试着写下今天三件让人觉得还不错的小事。再小的事也值得被记住。",
-    keyword: "记事",
-    period: ["evening", "night"],
-  },
-  {
-    id: 22,
-    emoji: "🎨",
-    text: "拿出彩笔，试着画一个今天看到的颜色。不用画得像，画出感觉就好。",
-    keyword: "绘色",
-    period: ["anytime"],
-  },
-  {
-    id: 23,
-    emoji: "💫",
-    text: "试着对着镜子笑一下，然后对自己说：今天辛苦了，已经做得很好了。",
-    keyword: "自语",
-    period: ["evening", "night"],
-  },
-  {
-    id: 24,
-    emoji: "🌟",
-    text: "试着关掉灯，在黑暗中看三分钟手机屏幕外的世界。黑暗里藏着很多安静的声音。",
-    keyword: "熄灯",
-    period: ["night"],
-  },
-  {
-    id: 25,
-    emoji: "🛏️",
-    text: "试着整理一下枕头和被子，给自己搭一个舒服的睡觉角落，像搭一个小窝。",
-    keyword: "理榻",
-    period: ["evening", "night"],
-  },
-  {
-    id: 26,
-    emoji: "🌸",
-    text: "在房间里找一个喜欢的小物件，拿在手里好好看看它。是什么让人喜欢？",
-    keyword: "拾物",
-    period: ["anytime"],
-  },
-  {
-    id: 27,
-    emoji: "☕",
-    text: "试着给自己泡一杯温热的饮品，慢慢喝完。感受温暖从喉咙流到胃里。",
-    keyword: "温饮",
-    period: ["morning", "afternoon", "evening"],
-  },
-  {
-    id: 28,
-    emoji: "🌈",
-    text: "试着想想今天有没有什么让人微笑的瞬间？哪怕只是嘴角轻轻上扬了一下。",
-    keyword: "回味",
-    period: ["evening", "night"],
-  },
+  // === 晨间 ===
+  { id: 1, emoji: "☀️", text: "试着拉开窗帘，让阳光慢慢洒进来。感受清晨的第一缕光落在皮肤上的温度。", keyword: "晨光", period: ["morning"], location: "窗边" },
+  { id: 2, emoji: "🍞", text: "给自己准备一份早餐吧，哪怕只是一片吐司，慢慢咀嚼，感受食物本来的味道。", keyword: "慢食", period: ["morning"], location: "厨房" },
+  { id: 3, emoji: "🐦", text: "如果窗外有鸟叫声，停下来听一听。数数有几种不同的旋律。", keyword: "听鸟", period: ["morning"], location: "窗边" },
+  { id: 4, emoji: "💧", text: "手边的水杯空了吗？去接一杯温水，感受它缓缓流过喉咙的暖意。", keyword: "温水", period: ["morning", "afternoon", "evening"], location: "桌边" },
+  { id: 5, emoji: "🌿", text: "给房间里的绿植浇一点水，和它们说声早安，它们会听见的。", keyword: "浇花", period: ["morning"], location: "阳台" },
+  { id: 6, emoji: "🌤️", text: "拍一张今天早上的天空吧，记录下此刻独一无二的光线。", keyword: "天光", period: ["morning"], location: "窗边" },
+  { id: 7, emoji: "🪴", text: "摸摸手边最近的那片叶子，感觉它的纹理。它在安静地呼吸着。", keyword: "触叶", period: ["morning", "afternoon"], location: "阳台" },
+  { id: 8, emoji: "🪞", text: "洗脸的时候看看镜子里的自己，对镜子里的人点一下头。早上好。", keyword: "镜中", period: ["morning"], location: "洗手间" },
+
+  // === 午间 ===
+  { id: 9, emoji: "☁️", text: "如果眼睛累了，抬头看看今天的云。说说它像什么，像棉花糖还是像小猫？", keyword: "观云", period: ["morning", "afternoon"], location: "窗边" },
+  { id: 10, emoji: "🎐", text: "打开窗户，闭上眼睛感受三分钟的风。它从很远的地方来，专门路过这里。", keyword: "听风", period: ["anytime"], location: "窗边" },
+  { id: 11, emoji: "🍊", text: "剥一个橘子，慢慢吃。吃完后闻闻手上残留的清香，那是阳光的味道。", keyword: "剥橘", period: ["afternoon", "evening"], location: "桌边" },
+  { id: 12, emoji: "🍃", text: "出门走走，找一片形状特别的叶子带回来，当作今天的小收藏。", keyword: "拾叶", period: ["morning", "afternoon"], location: "公园" },
+
+  // === 午后 ===
+  { id: 13, emoji: "☕", text: "泡一杯温热的饮品，慢慢喝完。感受温暖从喉咙流到胃里。", keyword: "温饮", period: ["morning", "afternoon", "evening"], location: "桌边" },
+  { id: 14, emoji: "🍵", text: "泡一杯热茶，捧在手里感受它的温度。不用急着喝，先暖一暖手心。", keyword: "品茶", period: ["afternoon", "evening", "night"], location: "桌边" },
+  { id: 15, emoji: "📖", text: "翻开一本书，读一段心动的句子。不用读完，只读一段就好。", keyword: "阅书", period: ["anytime"], location: "沙发" },
+  { id: 16, emoji: "🖍️", text: "拿一支笔，在纸上随意涂鸦五分钟。画什么都行，让手自由一点。", keyword: "涂鸦", period: ["anytime"], location: "桌边" },
+  { id: 17, emoji: "🎵", text: "戴上耳机，听一首很久没听的轻音乐。让旋律像水一样流过心里。", keyword: "听曲", period: ["anytime"], location: "沙发" },
+  { id: 18, emoji: "🪟", text: "走到窗边站一会儿，看一看外面的街道。什么人在经过，什么车在开。", keyword: "看街", period: ["morning", "afternoon"], location: "窗边" },
+
+  // === 户外 ===
+  { id: 19, emoji: "🌳", text: "走到最近的树下站一会儿，仰头看看叶子缝隙间的光。树已经站了很久了。", keyword: "树下", period: ["morning", "afternoon"], location: "公园" },
+  { id: 20, emoji: "🚶", text: "散十分钟步，不用走多远。走慢一点，感觉脚底和地面的每一次接触。", keyword: "慢走", period: ["morning", "afternoon", "evening"], location: "马路" },
+  { id: 21, emoji: "💐", text: "路过花店或者花坛的时候，停一下。看看今天什么花开得最好。", keyword: "看花", period: ["morning", "afternoon"], location: "马路" },
+  { id: 22, emoji: "🪨", text: "在路上找一块特别的石头，带回来放在桌上。它走了很远的路才到这里。", keyword: "拾石", period: ["morning", "afternoon"], location: "路边" },
+  { id: 23, emoji: "🌊", text: "如果有水边，去坐一会儿。看水面上的光在跳动，听水的声音。", keyword: "临水", period: ["anytime"], location: "水边" },
+  { id: 24, emoji: "🚌", text: "坐一站公交车或者地铁，不看手机，就看看窗外，看看身边的人。", keyword: "乘车", period: ["anytime"], location: "车站" },
+  { id: 25, emoji: "🌅", text: "找一个窗户，看看今天天空的颜色。傍晚的天空每天都在画不同的画。", keyword: "晚霞", period: ["evening"], location: "窗边" },
+  { id: 26, emoji: "🌆", text: "傍晚的时候出去走走，看看建筑物上的光。傍晚的光有蜂蜜一样的颜色。", keyword: "暮色", period: ["evening"], location: "马路" },
+
+  // === 黄昏/晚间 ===
+  { id: 27, emoji: "🕯️", text: "如果家里有香薰蜡烛，点一支，看火焰轻轻跳动，像一颗小小的心脏。", keyword: "烛光", period: ["evening", "night"], location: "卧室" },
+  { id: 28, emoji: "🛁", text: "洗一个慢一点的热水澡。感受水从肩膀流到脚尖。", keyword: "慢浴", period: ["evening", "night"], location: "浴室" },
+  { id: 29, emoji: "🧴", text: "找一瓶喜欢的乳液或者护手霜，认真涂一遍手。关节、指缝都别漏掉。", keyword: "护手", period: ["anytime"], location: "桌边" },
+  { id: 30, emoji: "🧦", text: "换上最舒服的那双袜子。让脚趾也放松一下，它们今天走了不少路。", keyword: "舒足", period: ["anytime"], location: "卧室" },
+  { id: 31, emoji: "🫧", text: "认真洗一次手，慢慢搓出一个大大的泡泡，看着它折射出彩虹的颜色。", keyword: "洗手", period: ["anytime"], location: "洗手间" },
+  { id: 32, emoji: "🧸", text: "抱抱身边的玩偶，告诉它今天发生了什么。它是这个世界上最好的倾听者。", keyword: "拥抱", period: ["evening", "night"], location: "卧室" },
+
+  // === 夜晚 ===
+  { id: 33, emoji: "🌙", text: "看看今晚有没有月亮？如果有，拍下来，留作今天的纪念。", keyword: "望月", period: ["evening", "night"], location: "窗边" },
+  { id: 34, emoji: "📝", text: "写下今天三件让人觉得还不错的小事。再小的事也值得被记住。", keyword: "记事", period: ["evening", "night"], location: "桌边" },
+  { id: 35, emoji: "💫", text: "对着镜子笑一下，然后对自己说：今天辛苦了，已经做得很好了。", keyword: "自语", period: ["evening", "night"], location: "洗手间" },
+  { id: 36, emoji: "🌟", text: "关掉灯，在黑暗中看三分钟手机屏幕外的世界。黑暗里藏着很多安静的声音。", keyword: "熄灯", period: ["night"], location: "卧室" },
+  { id: 37, emoji: "🛏️", text: "整理一下枕头和被子，给自己搭一个舒服的睡觉角落，像搭一个小窝。", keyword: "理榻", period: ["evening", "night"], location: "卧室" },
+  { id: 38, emoji: "🎧", text: "睡前听一首很慢的歌。闭上眼睛只听歌，什么都不想。", keyword: "入眠", period: ["night"], location: "床上" },
+  { id: 39, emoji: "🌈", text: "想想今天有没有什么让人微笑的瞬间？哪怕只是嘴角轻轻上扬了一下。", keyword: "回味", period: ["evening", "night"], location: "床上" },
+
+  // === 随时 ===
+  { id: 40, emoji: "🌸", text: "在房间里找一个喜欢的小物件，拿在手里好好看看它。是什么让人喜欢？", keyword: "拾物", period: ["anytime"], location: "房间" },
+  { id: 41, emoji: "🎨", text: "拿出彩笔，画一个今天看到的颜色。不用画得像，画出感觉就好。", keyword: "绘色", period: ["anytime"], location: "桌边" },
+  { id: 42, emoji: "📸", text: "在房间里找一个角落，拍一张照片。最普通的角落也有好看的角度。", keyword: "寻角", period: ["anytime"], location: "房间" },
+  { id: 43, emoji: "🗂️", text: "整理一个抽屉、一个文件夹或者手机里的十张截图。只整理一下就好。", keyword: "小整", period: ["anytime"], location: "桌边" },
+  { id: 44, emoji: "🫳", text: "摸一摸身边最近的布料——沙发的、抱枕的、窗帘的。感受它的纹理。", keyword: "触物", period: ["anytime"], location: "沙发" },
+  { id: 45, emoji: "🪑", text: "换一个不常坐的位置坐一会儿。从不同的角度看同一个房间。", keyword: "换位", period: ["anytime"], location: "房间" },
+  { id: 46, emoji: "📻", text: "打开收音机或者播客，随机听一个台。听听陌生人在说什么。", keyword: "随听", period: ["anytime"], location: "沙发" },
+  { id: 47, emoji: "🧶", text: "找一根线或者一根头绳，编一个最简单的结。手指在做重复动作的时候，脑子会安静下来。", keyword: "编结", period: ["anytime"], location: "桌边" },
+  { id: 48, emoji: "🥛", text: "倒一杯凉白开，小口小口地喝。凉白开是最好喝的饮料之一。", keyword: "喝水", period: ["anytime"], location: "桌边" },
+  { id: 49, emoji: "🕰️", text: "停下来一分钟，什么都不做。就是坐着或者站着，呼吸，等这一分钟过去。", keyword: "止时", period: ["anytime"], location: "任何地方" },
+  { id: 50, emoji: "🍂", text: "找一个干燥的、会响的东西——纸、树叶、塑料袋——用手指轻轻捏一下，听它发出的声音。", keyword: "听物", period: ["anytime"], location: "桌边" },
 ];
 
 function getCurrentPeriod(): string {
@@ -557,6 +425,7 @@ interface MemoryEntry {
   moodColor: string;
   response: string;
   imageData?: string;
+  location: string;
 }
 
 // ===== 主组件 =====
@@ -599,20 +468,20 @@ function App() {
     if (stored) return; // 已有数据就不种
     const today = new Date();
     const seed: MemoryEntry[] = [
-      { id: 9001, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "08:30", emoji: "☀️", eventText: "拉开窗帘，让阳光慢慢洒进来。感受清晨的第一缕光落在皮肤上的温度。", keyword: "晨光", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
-      { id: 9002, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "14:15", emoji: "☁️", eventText: "抬头看看今天的云吧。试着说说它像什么，像棉花糖还是像小猫？", keyword: "观云", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
-      { id: 9003, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "19:40", emoji: "🍊", eventText: "剥一个橘子，慢慢吃。吃完后闻闻手上残留的清香，那是阳光的味道。", keyword: "剥橘", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
-      { id: 9004, date: `${today.getMonth()+1}月${today.getDate()-1}日`, month: today.getMonth()+1, time: "09:12", emoji: "🎵", eventText: "戴上耳机，听一首很久没听的轻音乐。让旋律像水一样流过心里。", keyword: "听曲", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
-      { id: 9005, date: `${today.getMonth()+1}月${today.getDate()-1}日`, month: today.getMonth()+1, time: "16:50", emoji: "🖍️", eventText: "拿一支笔，在纸上随意涂鸦五分钟。画什么都行，让手自由一点。", keyword: "涂鸦", moodId: "tired", moodLabel: "疲惫", moodColor: "#C8C888", response: "" },
-      { id: 9006, date: `${today.getMonth()+1}月${today.getDate()-2}日`, month: today.getMonth()+1, time: "07:55", emoji: "🍞", eventText: "试着给自己准备一份早餐吧，哪怕只是一片吐司，慢慢咀嚼。", keyword: "慢食", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
-      { id: 9007, date: `${today.getMonth()+1}月${today.getDate()-2}日`, month: today.getMonth()+1, time: "21:10", emoji: "📖", eventText: "翻开一本书，读一段心动的句子。不用读完，只读一段就好。", keyword: "阅书", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
-      { id: 9008, date: `${today.getMonth()+1}月${today.getDate()-3}日`, month: today.getMonth()+1, time: "11:30", emoji: "🌿", eventText: "试着给房间里的绿植浇一点水，和它们说声早安，它们会听见的。", keyword: "浇花", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
-      { id: 9009, date: `${today.getMonth()+1}月${today.getDate()-3}日`, month: today.getMonth()+1, time: "17:25", emoji: "🍃", eventText: "如果愿意出门走走，试着找一片形状特别的叶子带回来。", keyword: "拾叶", moodId: "sad", moodLabel: "低落", moodColor: "#A4C4B8", response: "" },
-      { id: 9010, date: `${today.getMonth()+1}月${today.getDate()-4}日`, month: today.getMonth()+1, time: "12:05", emoji: "💧", eventText: "手边的水杯空了吗？去接一杯温水，感受它缓缓流过喉咙的暖意吧。", keyword: "温水", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
-      { id: 9011, date: `${today.getMonth()+1}月${today.getDate()-4}日`, month: today.getMonth()+1, time: "20:30", emoji: "🌅", eventText: "找一个能看到天空的窗口，静静看日落。光线从金黄变成橘红再变成深蓝。", keyword: "看日落", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "" },
-      { id: 9012, date: `${today.getMonth()+1}月${today.getDate()-5}日`, month: today.getMonth()+1, time: "10:15", emoji: "📷", eventText: "拍下了窗台上开的第一朵花，花瓣上还挂着露水。", keyword: "拍照", moodId: "", moodLabel: "留念", moodColor: "#B8C8D8", response: "", imageData: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='240'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23F5E6D3'/%3E%3Cstop offset='50%25' style='stop-color:%23E8D5C4'/%3E%3Cstop offset='100%25' style='stop-color:%23D4C8B8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='360' height='240' fill='url(%23g)'/%3E%3Ccircle cx='180' cy='100' r='30' fill='none' stroke='%23D4A5A5' stroke-width='1.5'/%3E%3Ctext x='180' y='165' text-anchor='middle' fill='%23B5A99E' font-size='13' font-family='serif'%3E📷 窗台的花%3C/text%3E%3C/svg%3E" },
-      { id: 9013, date: `${today.getMonth()+1}月${today.getDate()-5}日`, month: today.getMonth()+1, time: "18:40", emoji: "☕", eventText: "给自己泡了一杯温热的蜂蜜水，捧在手心里慢慢喝。", keyword: "蜂蜜水", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
-      { id: 9014, date: `${today.getMonth()+1}月${today.getDate()-6}日`, month: today.getMonth()+1, time: "10:20", emoji: "🐦", eventText: "如果窗外有鸟叫声，要不要停下来听一听？数数有几种不同的旋律。", keyword: "听鸟", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "" },
+      { id: 9001, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "08:30", emoji: "☀️", eventText: "拉开窗帘，让阳光慢慢洒进来。感受清晨的第一缕光落在皮肤上的温度。", keyword: "晨光", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "", location: "窗边" },
+      { id: 9002, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "14:15", emoji: "☁️", eventText: "抬头看看今天的云吧。试着说说它像什么，像棉花糖还是像小猫？", keyword: "观云", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "", location: "窗边" },
+      { id: 9003, date: `${today.getMonth()+1}月${today.getDate()}日`, month: today.getMonth()+1, time: "19:40", emoji: "🍊", eventText: "剥一个橘子，慢慢吃。吃完后闻闻手上残留的清香，那是阳光的味道。", keyword: "剥橘", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "", location: "桌边" },
+      { id: 9004, date: `${today.getMonth()+1}月${today.getDate()-1}日`, month: today.getMonth()+1, time: "09:12", emoji: "🎵", eventText: "戴上耳机，听一首很久没听的轻音乐。让旋律像水一样流过心里。", keyword: "听曲", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "", location: "沙发" },
+      { id: 9005, date: `${today.getMonth()+1}月${today.getDate()-1}日`, month: today.getMonth()+1, time: "16:50", emoji: "🖍️", eventText: "拿一支笔，在纸上随意涂鸦五分钟。画什么都行，让手自由一点。", keyword: "涂鸦", moodId: "tired", moodLabel: "疲惫", moodColor: "#C8C888", response: "", location: "桌边" },
+      { id: 9006, date: `${today.getMonth()+1}月${today.getDate()-2}日`, month: today.getMonth()+1, time: "07:55", emoji: "🍞", eventText: "试着给自己准备一份早餐吧，哪怕只是一片吐司，慢慢咀嚼。", keyword: "慢食", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "", location: "厨房" },
+      { id: 9007, date: `${today.getMonth()+1}月${today.getDate()-2}日`, month: today.getMonth()+1, time: "21:10", emoji: "📖", eventText: "翻开一本书，读一段心动的句子。不用读完，只读一段就好。", keyword: "阅书", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "", location: "沙发" },
+      { id: 9008, date: `${today.getMonth()+1}月${today.getDate()-3}日`, month: today.getMonth()+1, time: "11:30", emoji: "🌿", eventText: "试着给房间里的绿植浇一点水，和它们说声早安，它们会听见的。", keyword: "浇花", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "", location: "阳台" },
+      { id: 9009, date: `${today.getMonth()+1}月${today.getDate()-3}日`, month: today.getMonth()+1, time: "17:25", emoji: "🍃", eventText: "如果愿意出门走走，试着找一片形状特别的叶子带回来。", keyword: "拾叶", moodId: "sad", moodLabel: "低落", moodColor: "#A4C4B8", response: "", location: "公园" },
+      { id: 9010, date: `${today.getMonth()+1}月${today.getDate()-4}日`, month: today.getMonth()+1, time: "12:05", emoji: "💧", eventText: "手边的水杯空了吗？去接一杯温水，感受它缓缓流过喉咙的暖意吧。", keyword: "温水", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "", location: "桌边" },
+      { id: 9011, date: `${today.getMonth()+1}月${today.getDate()-4}日`, month: today.getMonth()+1, time: "20:30", emoji: "🌅", eventText: "找一个能看到天空的窗口，静静看日落。光线从金黄变成橘红再变成深蓝。", keyword: "看日落", moodId: "warm", moodLabel: "温暖", moodColor: "#D4A4A8", response: "", location: "窗边" },
+      { id: 9012, date: `${today.getMonth()+1}月${today.getDate()-5}日`, month: today.getMonth()+1, time: "10:15", emoji: "📷", eventText: "拍下了窗台上开的第一朵花，花瓣上还挂着露水。", keyword: "拍照", moodId: "", moodLabel: "留念", moodColor: "#B8C8D8", response: "", location: "阳台", imageData: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='240'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23F5E6D3'/%3E%3Cstop offset='50%25' style='stop-color:%23E8D5C4'/%3E%3Cstop offset='100%25' style='stop-color:%23D4C8B8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='360' height='240' fill='url(%23g)'/%3E%3Ccircle cx='180' cy='100' r='30' fill='none' stroke='%23D4A5A5' stroke-width='1.5'/%3E%3Ctext x='180' y='165' text-anchor='middle' fill='%23B5A99E' font-size='13' font-family='serif'%3E📷 窗台的花%3C/text%3E%3C/svg%3E" },
+      { id: 9013, date: `${today.getMonth()+1}月${today.getDate()-5}日`, month: today.getMonth()+1, time: "18:40", emoji: "☕", eventText: "给自己泡了一杯温热的蜂蜜水，捧在手心里慢慢喝。", keyword: "蜂蜜水", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "", location: "桌边" },
+      { id: 9014, date: `${today.getMonth()+1}月${today.getDate()-6}日`, month: today.getMonth()+1, time: "10:20", emoji: "🐦", eventText: "如果窗外有鸟叫声，要不要停下来听一听？数数有几种不同的旋律。", keyword: "听鸟", moodId: "calm", moodLabel: "平静", moodColor: "#8CB4C4", response: "", location: "窗边" },
     ];
     localStorage.setItem("fuguang-memory", JSON.stringify(seed));
     setMemoryEntries(seed);
@@ -810,6 +679,7 @@ function App() {
           moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
           response: "",
           imageData: envelopeImage || undefined,
+          location: "房间",
         };
         setEnvelopeText("");
         setEnvelopeImage(null);
@@ -839,6 +709,7 @@ function App() {
         keyword: currentEvent.keyword,
         moodId: mood.id, moodLabel: mood.label, moodColor: mood.color,
         response: "",
+        location: currentEvent.location,
       };
       setTimeout(() => {
         setPageState("collected");
@@ -1010,6 +881,7 @@ function App() {
           {pageState === "revealed" && currentEvent && (
             <div className="fuguang-reveal">
               <p className="fuguang-event-text">{currentEvent.text}</p>
+              <span className="fuguang-event-location">{currentEvent.location}</span>
             </div>
           )}
 
