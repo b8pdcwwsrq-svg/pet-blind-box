@@ -677,8 +677,8 @@ function App() {
       const body = envelopeText.trim();
       if (title || body || envelopeImage) {
         const emoji = envelopeImage ? "📷" : "✏️";
-        const eventText = body || title || "用照片记录了此刻";
         const keyword = title || body.slice(0, 8) || "留影";
+        const eventText = body || (title ? "" : "用照片记录了此刻");
         const newEntry: MemoryEntry = {
           id: Date.now() + Math.random(),
           date: dateStr, month: now.getMonth() + 1, time: timeStr,
