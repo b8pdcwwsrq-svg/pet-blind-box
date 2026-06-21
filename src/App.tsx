@@ -434,7 +434,7 @@ interface MemoryEntry {
 // ===== 主组件 =====
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>("main");
-  const [pageState, setPageState] = useState<"idle" | "revealed" | "collected">(
+  const [pageState, setPageState] = useState<"idle" | "loading" | "revealed" | "collected">(
     "idle",
   );
   const [currentEvent, setCurrentEvent] = useState<GlowEvent | null>(null);
@@ -526,6 +526,8 @@ function App() {
     if (pageState === "revealed") { handleSwap(); return; }
     if (pageState !== "idle") return;
     setIsAnimating(true);
+    setPageState("loading");
+    setCurrentEvent(null);
     const period = getCurrentPeriod();
     const suitableEvents = ALL_EVENTS.filter(
       (t) => t.period.includes(period) || t.period.includes("anytime"),
@@ -536,19 +538,22 @@ function App() {
       setCurrentEvent(randomEvent);
       setPageState("revealed");
       setIsAnimating(false);
-    }, 500);
+    }, 900);
   }, [isAnimating, pageState]);
 
   // ===== 在revealed状态点击光球/卡片 → 换一条小事 =====
   const handleSwap = useCallback(() => {
     if (isAnimating || pageState !== "revealed") return;
     setIsAnimating(true);
+    setPageState("loading");
+    setCurrentEvent(null);
     const others = ALL_EVENTS.filter((t) => t.id !== currentEvent?.id);
     const newTask = others[Math.floor(Math.random() * others.length)];
     setTimeout(() => {
       setCurrentEvent(newTask);
+      setPageState("revealed");
       setIsAnimating(false);
-    }, 350);
+    }, 700);
   }, [isAnimating, pageState, currentEvent]);
 
   // ===== 拖拽手势：长按 200ms 激活 =====
@@ -891,6 +896,18 @@ function App() {
               </div>
             );
           })()}
+
+          {/* 加载动画 */}
+          {pageState === "loading" && (
+            <div className="fuguang-loading">
+              <div className="fuguang-loading-dots">
+                <span className="fuguang-loading-dot" style={{ animationDelay: "0s" }} />
+                <span className="fuguang-loading-dot" style={{ animationDelay: "0.2s" }} />
+                <span className="fuguang-loading-dot" style={{ animationDelay: "0.4s" }} />
+              </div>
+              <p className="fuguang-loading-text">正在寻找一段适合的时光...</p>
+            </div>
+          )}
 
           {/* 事件卡片 */}
           {pageState === "revealed" && currentEvent && (
