@@ -59,20 +59,30 @@ function formatDateLabel(dateStr: string): string {
   return dateStr;
 }
 
-// ===== 情绪画布组件 =====
-function MoodCanvas({ entries }: { entries: MemoryEntry[] }) {
+// ===== 玻璃罐萤火虫 =====
+function GlassJar({
+  entries,
+  onDayClick,
+}: {
+  entries: MemoryEntry[];
+  onDayClick?: (dateStr: string) => void;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animRef = useRef(0);
+  const starsRef = useRef<Array<{
+    x: number; y: number; day: number; color: string; count: number;
+    baseX: number; baseY: number; radius: number; phase: number;
+  }>>([]);
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const daysInMonth = new Date(year, month, 0).getDate();
 
-  // 按日期索引记录数
+  // 构建天→星映射
   const dayMap = useMemo(() => {
     const map = new Map<number, { count: number; colors: string[] }>();
     entries.forEach((e) => {
-      const m = e.month;
-      if (m !== month) return;
+      if (e.month !== month) return;
       const d = parseInt(e.date.split("月")[1].replace("日", ""));
       if (!map.has(d)) map.set(d, { count: 0, colors: [] });
       const rec = map.get(d)!;
@@ -82,125 +92,244 @@ function MoodCanvas({ entries }: { entries: MemoryEntry[] }) {
     return map;
   }, [entries, month]);
 
-  const draw = useCallback(
-    (canvas: HTMLCanvasElement | null) => {
-      if (!canvas) return;
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      const ctx = canvas.getContext("2d")!;
-      ctx.scale(dpr, dpr);
-      const w = rect.width;
-      const h = rect.height;
-      ctx.clearRect(0, 0, w, h);
-
-      // 宣纸底色
-      ctx.fillStyle = "#F5F1E7";
-      ctx.fillRect(0, 0, w, h);
-
-      // 纸张纤维：随机分布极浅的横纹
-      ctx.save();
-      ctx.globalAlpha = 0.04;
-      for (let i = 0; i < h; i += 3 + Math.random() * 4) {
-        ctx.fillStyle = i % 7 === 0 ? "#C8B898" : "#D4C8B0";
-        ctx.fillRect(0, i, w, 1);
-      }
-      // 稀疏竖纹
-      for (let i = 0; i < w; i += 18 + Math.random() * 22) {
-        ctx.fillStyle = "#C0B498";
-        ctx.fillRect(i, 0, 0.5, h);
-      }
-      ctx.restore();
-
-      // 纸张颗粒：极细噪点
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const d = imageData.data;
-      const seed = 42;
-      for (let i = 0; i < d.length; i += 4) {
-        const r = (Math.sin(seed + i * 0.00037) + 1) * 0.5;
-        const n = (r - 0.5) * 5;
-        d[i] = Math.min(255, Math.max(0, d[i] + n));
-        d[i + 1] = Math.min(255, Math.max(0, d[i + 1] + n));
-        d[i + 2] = Math.min(255, Math.max(0, d[i + 2] + n + 2));
-      }
-      ctx.putImageData(imageData, 0, 0);
-
-      const cols = 7;
-      const rows = Math.ceil(daysInMonth / 7);
-      const cellW = w / cols;
-      const cellH = h / rows;
-
-      // 先确定当月第一天是周几（日=0 月=1...六=6）
-      const firstDay = new Date(year, month - 1, 1).getDay();
-      // 计算每周的行起始偏移（周日=第0列）
-
-      // 画每个有记录的日期
-      dayMap.forEach((rec, day) => {
-        const idx = day - 1; // 0-based index
-        const row = Math.floor((idx + firstDay) / 7);
-        const col = (idx + firstDay) % 7;
-        if (row >= rows) return;
-
-        const cx = col * cellW + cellW / 2;
-        const cy = row * cellH + cellH / 2;
-        const maxRadius = Math.min(cellW, cellH) * 0.7;
-
-        // 多色叠加晕染
-        const uniqueColors = [...new Set(rec.colors)];
-        if (uniqueColors.length === 0) return;
-
-        // 每个颜色画一层径向渐变，叠加
-        uniqueColors.forEach((color, ci) => {
-          const r = maxRadius * (0.5 + 0.5 * (1 - ci / uniqueColors.length));
-          const grad = ctx.createRadialGradient(cx, cy, r * 0.15, cx, cy, r);
-          grad.addColorStop(0, color + "88");
-          grad.addColorStop(0.35, color + "44");
-          grad.addColorStop(0.7, color + "0D");
-          grad.addColorStop(1, "transparent");
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.fill();
-        });
-
-        // 多条记录时叠加一个小光点
-        if (rec.count >= 2) {
-          const dotGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius * 0.18);
-          dotGrad.addColorStop(0, "rgba(255,255,255,0.6)");
-          dotGrad.addColorStop(1, "transparent");
-          ctx.fillStyle = dotGrad;
-          ctx.beginPath();
-          ctx.arc(cx, cy, maxRadius * 0.18, 0, Math.PI * 2);
-          ctx.fill();
-        }
+  // 生成星星
+  const stars = useMemo(() => {
+    const result: typeof starsRef.current = [];
+    // 罐子可用区域（相对坐标 0-1）
+    const jarLeft = 0.08, jarRight = 0.92, jarTop = 0.12, jarBottom = 0.82;
+    for (let day = 1; day <= daysInMonth; day++) {
+      const rec = dayMap.get(day);
+      const seed = day * 37 + month * 131;
+      const sx = (Math.sin(seed * 0.427) + 1) * 0.5;
+      const sy = (Math.cos(seed * 0.319) + 1) * 0.5;
+      const x = jarLeft + sx * (jarRight - jarLeft);
+      const y = jarTop + sy * (jarBottom - jarTop);
+      const radius = rec ? (rec.count >= 2 ? 3.5 : 2.8) : 1.2;
+      const color = rec && rec.colors.length > 0
+        ? rec.colors[rec.colors.length - 1]
+        : "";
+      result.push({
+        x, y, day, color, count: rec?.count || 0,
+        baseX: x, baseY: y, radius, phase: Math.random() * Math.PI * 2,
       });
-    },
-    [dayMap, daysInMonth, year, month],
-  );
+    }
+    return result;
+  }, [dayMap, daysInMonth, month]);
 
-  // 初次渲染后绘制
-  React.useEffect(() => {
-    draw(canvasRef.current);
-  }, [draw]);
+  starsRef.current = stars;
 
-  // 监听 resize
+  const draw = useCallback((canvas: HTMLCanvasElement | null, time: number) => {
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const W = rect.width;
+    const H = rect.height;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    const ctx = canvas.getContext("2d")!;
+    ctx.scale(dpr, dpr);
+
+    // 背景
+    ctx.fillStyle = "#F7F4ED";
+    ctx.fillRect(0, 0, W, H);
+
+    const cx = W / 2;
+    const jw = W * 0.72;  // 罐宽
+    const jh = H * 0.72;  // 罐高
+    const jtop = H * 0.08;
+    const jbottom = jtop + jh;
+    const jleft = cx - jw / 2;
+    const jright = cx + jw / 2;
+    const jr = jw * 0.15; // 罐角半径
+    const neckW = jw * 0.32;
+    const neckH = H * 0.06;
+    const neckY = jtop - neckH;
+
+    // 罐子阴影（底部）
+    ctx.save();
+    const shadowGrad = ctx.createRadialGradient(cx, jbottom + 6, jw * 0.1, cx, jbottom, jw * 0.8);
+    shadowGrad.addColorStop(0, "rgba(180,160,140,0.08)");
+    shadowGrad.addColorStop(1, "transparent");
+    ctx.fillStyle = shadowGrad;
+    ctx.fillRect(0, jtop, W, H);
+    ctx.restore();
+
+    // 玻璃罐身 —— 磨砂透明
+    ctx.save();
+    // 罐身路径
+    ctx.beginPath();
+    ctx.moveTo(jleft + jr, jtop);
+    ctx.lineTo(jright - jr, jtop);
+    ctx.quadraticCurveTo(jright, jtop, jright, jtop + jr);
+    ctx.lineTo(jright, jbottom - jr);
+    ctx.quadraticCurveTo(jright, jbottom, jright - jr, jbottom);
+    ctx.lineTo(jleft + jr, jbottom);
+    ctx.quadraticCurveTo(jleft, jbottom, jleft, jbottom - jr);
+    ctx.lineTo(jleft, jtop + jr);
+    ctx.quadraticCurveTo(jleft, jtop, jleft + jr, jtop);
+    ctx.closePath();
+    // 玻璃填充
+    const glassGrad = ctx.createLinearGradient(jleft, 0, jright, 0);
+    glassGrad.addColorStop(0, "rgba(255,255,255,0.18)");
+    glassGrad.addColorStop(0.2, "rgba(255,255,255,0.07)");
+    glassGrad.addColorStop(0.5, "rgba(255,255,255,0.03)");
+    glassGrad.addColorStop(0.8, "rgba(255,255,255,0.08)");
+    glassGrad.addColorStop(1, "rgba(255,255,255,0.22)");
+    ctx.fillStyle = glassGrad;
+    ctx.fill();
+    // 玻璃边框
+    ctx.strokeStyle = "rgba(180,170,155,0.25)";
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    // 高光
+    ctx.beginPath();
+    ctx.ellipse(cx - jw * 0.28, jtop + jh * 0.25, jw * 0.06, jh * 0.12, -0.15, 0, Math.PI * 2);
+    const hlGrad = ctx.createRadialGradient(cx - jw * 0.28, jtop + jh * 0.25, 0, cx - jw * 0.28, jtop + jh * 0.25, jw * 0.06);
+    hlGrad.addColorStop(0, "rgba(255,255,255,0.4)");
+    hlGrad.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = hlGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // 罐口
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(cx - neckW / 2, neckY);
+    ctx.lineTo(cx + neckW / 2, neckY);
+    ctx.lineTo(cx + neckW / 2 + 3, jtop);
+    ctx.lineTo(cx - neckW / 2 - 3, jtop);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(255,255,255,0.12)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(180,170,155,0.2)";
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+    ctx.restore();
+
+    // 萤火虫星星
+    const t = time * 0.001;
+    const jarAreaLeft = jleft + 16;
+    const jarAreaRight = jright - 16;
+    const jarAreaTop = jtop + 16;
+    const jarAreaBottom = jbottom - 14;
+
+    starsRef.current.forEach((s) => {
+      const sx = jarAreaLeft + s.baseX * (jarAreaRight - jarAreaLeft);
+      const sy = jarAreaTop + s.baseY * (jarAreaBottom - jarAreaTop);
+
+      // 漂浮偏移
+      const floatX = Math.sin(t * 0.7 + s.phase) * 3;
+      const floatY = Math.cos(t * 0.5 + s.phase * 1.3) * 2.5;
+      const px = sx + floatX;
+      const py = sy + floatY;
+
+      if (s.color) {
+        // 有情绪 —— 彩色萤火虫
+        // 外发光
+        const outerGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius * 4);
+        outerGlow.addColorStop(0, s.color + "55");
+        outerGlow.addColorStop(0.4, s.color + "15");
+        outerGlow.addColorStop(1, "transparent");
+        ctx.fillStyle = outerGlow;
+        ctx.beginPath();
+        ctx.arc(px, py, s.radius * 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 内发光
+        const innerGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius * 1.8);
+        innerGlow.addColorStop(0, s.color + "EE");
+        innerGlow.addColorStop(0.5, s.color + "88");
+        innerGlow.addColorStop(1, s.color + "00");
+        ctx.fillStyle = innerGlow;
+        ctx.beginPath();
+        ctx.arc(px, py, s.radius * 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 闪烁（亮度随时间和相位变化）
+        const flicker = 0.6 + 0.4 * Math.sin(t * 2.3 + s.phase * 2.7);
+        const coreGlow = ctx.createRadialGradient(px, py, 0, px, py, s.radius);
+        coreGlow.addColorStop(0, `rgba(255,255,255,${0.9 * flicker})`);
+        coreGlow.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = coreGlow;
+        ctx.beginPath();
+        ctx.arc(px, py, s.radius, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // 无情绪 —— 暗淡小白点
+        const dim = 0.06 + 0.03 * Math.sin(t * 0.5 + s.phase);
+        ctx.fillStyle = `rgba(200,195,185,${dim})`;
+        ctx.beginPath();
+        ctx.arc(px, py, s.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+  }, [month]);
+
+  // 动画循环
   React.useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const observer = new ResizeObserver(() => draw(canvas));
-    observer.observe(canvas);
-    return () => observer.disconnect();
+    let running = true;
+    const loop = (time: number) => {
+      if (!running) return;
+      draw(canvas, time);
+      animRef.current = requestAnimationFrame(loop);
+    };
+    animRef.current = requestAnimationFrame(loop);
+    return () => {
+      running = false;
+      cancelAnimationFrame(animRef.current);
+    };
   }, [draw]);
 
+  // 点击查找日期
+  const handleClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!onDayClick) return;
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+    const W = rect.width, H = rect.height;
+    const jarAreaLeft = (0.08 + 16 / W) * W;
+    const jarAreaRight = (0.92 - 16 / W) * W;
+    const jarAreaTop = (0.12 + 16 / H) * H;
+    const jarAreaBottom = (0.82 - 14 / H) * H;
+
+    // 找最近的星星
+    let bestDist = Infinity, bestDay = -1;
+    starsRef.current.forEach((s) => {
+      const sx = jarAreaLeft + s.baseX * (jarAreaRight - jarAreaLeft);
+      const sy = jarAreaTop + s.baseY * (jarAreaBottom - jarAreaTop);
+      const dist = Math.hypot(cx - sx, cy - sy);
+      if (dist < 28 && dist < bestDist) { bestDist = dist; bestDay = s.day; }
+    });
+    if (bestDay > 0) {
+      onDayClick(`${month}月${bestDay}日`);
+    }
+  }, [onDayClick, month]);
+
+  // 监听 resize 重绘
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const observer = new ResizeObserver(() => {
+      // 触发重绘由动画循环处理
+    });
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, []);
+
+  const titleHeight = 18;
+  const totalH = 180;
+
   return (
-    <div className="fuguang-mood-canvas-wrap">
-      <p className="fuguang-mood-canvas-label">
-        {month}月情绪画布
-      </p>
+    <div className="fuguang-glass-jar-wrap">
+      <p className="fuguang-glass-jar-label">{month}月情绪收集罐</p>
       <canvas
         ref={canvasRef}
-        className="fuguang-mood-canvas"
+        className="fuguang-glass-jar-canvas"
+        style={{ height: totalH - titleHeight - 10 }}
+        onClick={handleClick}
       />
     </div>
   );
@@ -380,12 +509,25 @@ const FuguangTimeline: React.FC<FuguangTimelineProps> = ({
       )}
 
       <div className="fuguang-timeline-scroll">
-        {/* 情绪画布 */}
-        <MoodCanvas entries={entries} />
+        {/* 玻璃罐萤火虫 */}
+        <GlassJar
+          entries={entries}
+          onDayClick={(dateStr) => {
+            // 滚动到对应日期
+            const el = document.getElementById(`tl-day-${dateStr}`);
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }}
+        />
 
         {/* 时间轴卡片 */}
         {dateGroups.map((group, gIdx) => (
-          <div key={group.date} className="fuguang-timeline-day-group">
+          <div
+            key={group.date}
+            className="fuguang-timeline-day-group"
+            id={`tl-day-${group.date}`}
+          >
             <div className="fuguang-timeline-date-label">
               {formatDateLabel(group.date)}
             </div>

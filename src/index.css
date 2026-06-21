@@ -1508,24 +1508,25 @@ body {
   padding: 0 16px 48px;
 }
 
-/* ===== 情绪画布 ===== */
-.fuguang-mood-canvas-wrap {
-  padding: 0 0 16px 0;
-  margin-bottom: 4px;
+/* ===== 玻璃罐萤火虫 ===== */
+.fuguang-glass-jar-wrap {
+  padding: 0 0 10px 0;
+  margin-bottom: 8px;
 }
 
-.fuguang-mood-canvas-label {
+.fuguang-glass-jar-label {
   font-size: 11px;
   color: #b0a090;
   letter-spacing: 0.08em;
   font-weight: 320;
-  margin: 0 0 8px 4px;
+  margin: 0 0 4px 4px;
 }
 
-.fuguang-mood-canvas {
+.fuguang-glass-jar-canvas {
   display: block;
   width: 100%;
-  height: 180px;
+  height: 162px;
+  cursor: pointer;
 }
 
 /* ===== 滑动删除 ===== */
