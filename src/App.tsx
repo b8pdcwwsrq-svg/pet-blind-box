@@ -174,6 +174,7 @@ const ALL_MOODS = [
   { id: "sad", label: "低落", color: "#A4C4B8" },
   { id: "tired", label: "疲惫", color: "#C8C888" },
   { id: "confused", label: "困惑", color: "#B8A0C8" },
+  { id: "content", label: "满足", color: "#C4B888" },
 ];
 
 // ===== 四季音乐 =====
