@@ -373,11 +373,14 @@ function GlassJar({
 // ===== 滑动删除卡片 =====
 function SwipeCard({
   entry, gIdx, eIdx, onDelete,
+  hasConnectorAbove, hasConnectorBelow,
 }: {
   entry: MemoryEntry;
   gIdx: number;
   eIdx: number;
   onDelete?: (id: number) => void;
+  hasConnectorAbove?: boolean;
+  hasConnectorBelow?: boolean;
 }) {
   const [swipeX, setSwipeX] = useState(0);
   const [showDelete, setShowDelete] = useState(false);
@@ -439,7 +442,7 @@ function SwipeCard({
         删除
       </button>
       <motion.div
-        className="fuguang-timeline-card"
+        className={`fuguang-timeline-card ${hasConnectorAbove ? "connector-above" : ""} ${hasConnectorBelow ? "connector-below" : ""}`}
         style={{
           transform: `translateX(${swipeX}px)`,
           transition: startRef.current ? "none" : "transform 0.25s ease",
@@ -457,8 +460,10 @@ function SwipeCard({
         transition={{ delay: gIdx * 0.04 + eIdx * 0.02, duration: 0.35, ease: "easeOut" }}
       >
         {/* 情绪水彩圆点 */}
-        <div className="fuguang-timeline-mood-blob" style={{ backgroundColor: entry.moodColor || "#C8C0B8" }}>
-          <div className="fuguang-timeline-blob-shine" />
+        <div className="fuguang-timeline-blob-col">
+          <div className="fuguang-timeline-mood-blob" style={{ backgroundColor: entry.moodColor || "#C8C0B8" }}>
+            <div className="fuguang-timeline-blob-shine" />
+          </div>
         </div>
 
         <div className="fuguang-timeline-card-body">
@@ -556,8 +561,16 @@ const FuguangTimeline: React.FC<FuguangTimelineProps> = ({ entries, onClose, onD
           dateGroups.map((group, gIdx) => (
             <div key={group.date} className="fuguang-timeline-day-group" id={`tl-day-${group.date}`}>
               <div className="fuguang-timeline-date-label">{formatDateLabel(group.date)}</div>
-              {group.entries.map((entry, eIdx) => (
-                <SwipeCard key={entry.id} entry={entry} gIdx={gIdx} eIdx={eIdx} onDelete={onDelete} />
+              {group.entries.map((entry, eIdx, arr) => (
+                <SwipeCard
+                  key={entry.id}
+                  entry={entry}
+                  gIdx={gIdx}
+                  eIdx={eIdx}
+                  onDelete={onDelete}
+                  hasConnectorAbove={arr.length > 1 && eIdx > 0}
+                  hasConnectorBelow={arr.length > 1 && eIdx < arr.length - 1}
+                />
               ))}
             </div>
           ))

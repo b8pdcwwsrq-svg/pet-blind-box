@@ -1738,8 +1738,7 @@ body {
 /* ===== 滑动删除 ===== */
 .fuguang-swipe-card-wrap {
   position: relative;
-  overflow: hidden;
-  /* 确保圆角裁剪 */
+  overflow: visible;
 }
 
 .fuguang-swipe-delete-btn {
@@ -1801,18 +1800,46 @@ body {
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* 情绪水彩圆点 */
+/* 情绪水彩圆点 + 连接线 */
+.fuguang-timeline-blob-col {
+  flex-shrink: 0;
+  width: 18px;
+  position: relative;
+  z-index: 2;
+}
+
+/* 连接线伪元素 —— 位于blob后方，线经过blob中心但不穿过（blob z-index覆盖线上） */
+.fuguang-timeline-card.connector-below .fuguang-timeline-blob-col::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 11px; /* blob 中心 */
+  bottom: -14px; /* 延伸到下一张卡片的 padding */
+  width: 1px;
+  background: rgba(180, 160, 130, 0.15);
+}
+
+.fuguang-timeline-card.connector-above .fuguang-timeline-blob-col::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -14px; /* 从上一张卡片的 padding 开始 */
+  bottom: 7px; /* 到 blob 中心 */
+  width: 1px;
+  background: rgba(180, 160, 130, 0.15);
+}
+
 .fuguang-timeline-mood-blob {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 3px;
   position: relative;
+  z-index: 3;
   box-shadow:
     0 0 8px rgba(0,0,0,0.04),
     inset 0 0 4px rgba(255,255,255,0.3);
-  /* 边缘不规整用水彩box-shadow模拟 —— 微偏移的半透明光晕 */
 }
 
 .fuguang-timeline-mood-blob::before {
