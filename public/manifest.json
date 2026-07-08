@@ -1,0 +1,47 @@
+{
+  "name": "今日拾光",
+  "short_name": "拾光",
+  "description": "你不需要好起来，你只是来体验的。在日常的微光中停留，记录属于你的拾光时刻。",
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "background_color": "#f7f4ed",
+  "theme_color": "#E8A87C",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-1.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "wellness"],
+  "shortcuts": [
+    {
+      "name": "记录当下",
+      "short_name": "记录",
+      "description": "快速打开信封，记录今日拾光",
+      "url": "/?mode=record",
+      "icons": [
+        {
+          "src": "/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
