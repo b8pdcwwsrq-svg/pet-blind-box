@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 @import url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css");
+=======
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 @import "tailwindcss";
 
 /* ===== 全局 - 东方留白 ===== */
@@ -12,9 +15,15 @@ html,
 body {
   height: 100%;
   font-family:
+<<<<<<< HEAD
     "LXGW WenKai", "STKaiti", "KaiTi",
     "Noto Serif SC", "Source Han Serif SC",
     "PingFang SC", "Microsoft YaHei", serif;
+=======
+    "Inter", "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB",
+    "Noto Sans SC", sans-serif;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
   background: #f7f4ed;
   color: #4a4540;
   -webkit-font-smoothing: antialiased;
@@ -146,7 +155,10 @@ body {
   font-weight: 350;
   color: #3a3530;
   letter-spacing: 0.16em;
+<<<<<<< HEAD
   text-wrap: balance;
+=======
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 }
 
 /* ===== 二十四节气卡片 ===== */
@@ -237,9 +249,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+<<<<<<< HEAD
   margin-bottom: 20px;
   position: relative;
   gap: 14px;
+=======
+  margin-bottom: 32px;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 }
 
 .fuguang-orb-btn {
@@ -291,7 +307,11 @@ body {
     0 0 90px rgba(250, 230, 190, 0.25),
     0 0 140px rgba(245, 222, 180, 0.12),
     0 0 200px rgba(240, 215, 170, 0.05);
+<<<<<<< HEAD
   animation: orb-breathe 12s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+=======
+  animation: orb-breathe 8s ease-in-out infinite;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
   transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -323,6 +343,7 @@ body {
 }
 
 .fuguang-orb-hint {
+<<<<<<< HEAD
   font-size: 11px;
   color: #b8b0a0;
   letter-spacing: 0.22em;
@@ -458,6 +479,18 @@ body {
   letter-spacing: 0.15em;
   font-weight: 300;
   opacity: 0.5;
+=======
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #b8b0a0;
+  letter-spacing: 0.22em;
+  font-weight: 320;
+  animation: pulse-soft 3s ease-in-out infinite;
+  white-space: nowrap;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 }
 
 /* ===== 引导文案 ===== */
@@ -679,7 +712,11 @@ body {
 
 .fuguang-mood-sheet {
   position: relative;
+<<<<<<< HEAD
   padding: 24px 16px;
+=======
+  padding: 28px 32px;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
   text-align: center;
 }
 
@@ -693,27 +730,41 @@ body {
 
 .fuguang-mood-options {
   display: flex;
+<<<<<<< HEAD
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
   max-width: 300px;
   margin: 0 auto;
+=======
+  gap: 20px;
+  justify-content: center;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 }
 
 .fuguang-mood-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
+<<<<<<< HEAD
   gap: 6px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 4px;
+=======
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
   transition: transform 0.25s ease;
   font-family: inherit;
 }
 
 .fuguang-mood-btn:hover {
+<<<<<<< HEAD
   transform: translateY(-4px) scale(1.06);
 }
 .fuguang-mood-btn:active {
@@ -723,10 +774,22 @@ body {
 .fuguang-mood-circle {
   width: 52px;
   height: 52px;
+=======
+  transform: scale(1.08);
+}
+.fuguang-mood-btn:active {
+  transform: scale(0.95);
+}
+
+.fuguang-mood-circle {
+  width: 56px;
+  height: 56px;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+<<<<<<< HEAD
   font-size: 12px;
   letter-spacing: 0.06em;
   font-weight: 400;
@@ -751,6 +814,19 @@ body {
 .fuguang-mood-circle:hover {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
   transform: scale(1.12);
+=======
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+}
+
+.fuguang-mood-circle:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transform: scale(1.05);
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 }
 
 /* ===== 写一句弹窗 ===== */
@@ -1345,6 +1421,7 @@ body {
 
 /* ===== 核心动画 ===== */
 
+<<<<<<< HEAD
 /* 正念呼吸引导 - 12秒循环：吸气4秒→屏息4秒→呼气4秒 */
 @keyframes orb-breathe {
   0% {
@@ -1391,6 +1468,40 @@ body {
       inset 0 0 8px rgba(255, 250, 235, 0.6),
       0 0 15px rgba(255, 245, 220, 0.3),
       0 0 30px rgba(255, 238, 205, 0.15);
+=======
+/* 光球呼吸 - 8秒深呼吸周期（4秒吸气+4秒呼气） */
+@keyframes orb-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.88);
+    opacity: 0.65;
+    box-shadow:
+      inset 0 0 12px rgba(255, 250, 235, 1),
+      inset 0 0 25px rgba(255, 248, 225, 0.9),
+      inset 0 0 40px rgba(250, 240, 210, 0.5),
+      inset 0 0 60px rgba(245, 230, 195, 0.2),
+      0 0 25px rgba(255, 245, 220, 0.7),
+      0 0 50px rgba(255, 238, 205, 0.45),
+      0 0 90px rgba(250, 230, 190, 0.25),
+      0 0 140px rgba(245, 222, 180, 0.12),
+      0 0 200px rgba(240, 215, 170, 0.05);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.1);
+    opacity: 1;
+    box-shadow:
+      inset 0 0 12px rgba(255, 250, 235, 1),
+      inset 0 0 25px rgba(255, 248, 225, 0.9),
+      inset 0 0 40px rgba(250, 240, 210, 0.5),
+      inset 0 0 60px rgba(245, 230, 195, 0.2),
+      0 0 25px rgba(255, 245, 220, 0.7),
+      0 0 50px rgba(255, 238, 205, 0.45),
+      0 0 90px rgba(250, 230, 190, 0.25),
+      0 0 140px rgba(245, 222, 180, 0.12),
+      0 0 200px rgba(240, 215, 170, 0.05),
+      /* 隐隐约约的红色光晕 - 不全包围 */ 0 0 60px rgba(200, 80, 60, 0.06),
+      0 0 120px rgba(180, 60, 50, 0.03);
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
   }
 }
 
@@ -1459,11 +1570,14 @@ body {
 }
 
 /* 其他动画 */
+<<<<<<< HEAD
 @keyframes fade-in {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
 
+=======
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 @keyframes fade-in-up {
   0% {
     opacity: 0;
@@ -1709,6 +1823,7 @@ body {
 .fuguang-letter-submit:disabled { opacity: 0.3; cursor: default; }
 .fuguang-letter-submit:not(:disabled):active { background: #b0b5a3; }
 
+<<<<<<< HEAD
 .fuguang-letter-back {
   padding: 9px 16px; border-radius: 999px; border: 1px solid #d5cfc8;
   background: transparent; font-family: inherit; font-size: 13px;
@@ -1716,6 +1831,8 @@ body {
 }
 .fuguang-letter-back:active { background: rgba(180,160,130,0.08); }
 
+=======
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 .fuguang-memory-prompt {
   font-size: 12px;
   color: #b0a898;
@@ -2038,16 +2155,20 @@ body {
   margin: 0;
 }
 
+<<<<<<< HEAD
 .fuguang-timeline-blob-time {
   font-family: inherit;
 }
 
+=======
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 /* 卡片 —— 水彩圆点 + 纯文本 */
 .fuguang-timeline-card {
   display: flex;
   gap: 14px;
   padding: 14px 0;
   border-bottom: 1px solid rgba(180, 160, 130, 0.07);
+<<<<<<< HEAD
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 12px;
   margin: 0 -8px;
@@ -2064,6 +2185,13 @@ body {
 .fuguang-timeline-card:active {
   background: rgba(255, 255, 255, 0.2);
   transform: scale(0.99);
+=======
+  transition: background 0.2s ease;
+}
+
+.fuguang-timeline-card:active {
+  background: rgba(255, 255, 255, 0.15);
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 }
 
 /* 情绪水彩圆点 + 连接线 */
@@ -2131,6 +2259,7 @@ body {
   filter: blur(3px);
 }
 
+<<<<<<< HEAD
 .fuguang-timeline-mood-blob::after {
   content: "";
   position: absolute;
@@ -2140,6 +2269,8 @@ body {
   z-index: -1;
 }
 
+=======
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 .fuguang-timeline-blob-shine {
   position: absolute;
   top: 3px;
@@ -2181,6 +2312,13 @@ body {
   font-size: 14px;
   color: #5a5040;
   line-height: 1.65;
+<<<<<<< HEAD
+=======
+  letter-spacing: 0.04em;
+  font-weight: 320;
+  text-indent: 2em;
+  margin: 0 0 8px;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
 }
 
 /* 位置标签 */
@@ -2203,9 +2341,14 @@ body {
 .fuguang-timeline-card-img {
   display: block;
   width: 100%;
+<<<<<<< HEAD
   height: auto;
   max-height: none;
   object-fit: contain;
+=======
+  max-height: 200px;
+  object-fit: cover;
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
   border-radius: 4px;
 }
 
@@ -2340,6 +2483,7 @@ body {
   margin-left: auto;
   font-size: 14px;
 }
+<<<<<<< HEAD
 
 /* ===== 贴纸白色轮廓描边（沿物品边缘，3px粗） ===== */
 .sticker-picker-item-img,
@@ -2452,3 +2596,5 @@ body {
   max-height: none !important;
   height: auto !important;
 }
+=======
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4

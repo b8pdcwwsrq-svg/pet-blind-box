@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "jinrishiguang",
+=======
+  "name": "pet-blind-box",
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,6 +17,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
+<<<<<<< HEAD
     "canvas": "^3.2.3",
     "tailwindcss": "^4.3.1",
     "typescript": "~6.0.2",
@@ -23,6 +28,15 @@
     "@imgly/background-removal": "^1.7.0",
     "framer-motion": "^11.0.0",
     "html2canvas": "^1.4.1",
+=======
+    "tailwindcss": "^4.3.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.12"
+  },
+  "dependencies": {
+    "framer-motion": "^12.40.0",
+    "humbleicons": "^1.21.0",
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }

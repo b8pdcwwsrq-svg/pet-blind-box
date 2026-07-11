@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿node_modules/
 dist/
 dev-dist/
@@ -5,3 +6,9 @@ leadradar/
 scripts/
 *.log
 .DS_Store
+=======
+.vscode/
+node_modules/
+dist/
+*.backup.*
+>>>>>>> a7dac5b3ba7839daf1d108892f57485ec9abf6c4
